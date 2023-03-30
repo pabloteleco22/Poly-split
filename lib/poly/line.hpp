@@ -1,7 +1,7 @@
 #ifndef LINE_H
 #define LINE_H
 
-#include "vector.h"
+#include "vector.hpp"
 #include <ostream>
 
 class Line {

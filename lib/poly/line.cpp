@@ -1,6 +1,5 @@
-#include "line.h"
+#include "line.hpp"
 
-#include "vector.h"
 #include <cassert>
 
 Line::Line() {}

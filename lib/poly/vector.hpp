@@ -95,7 +95,7 @@ struct Vector {
 };
 
 typedef std::vector<Vector> Vectors;
-typedef std::vector<Vector>::iterator VectIter;
+typedef std::vector<Vector>::iterator VecIter;
 typedef std::vector<Vector>::const_iterator CVectIter;
 
 #endif // VECTOR_H

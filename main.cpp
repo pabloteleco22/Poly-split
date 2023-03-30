@@ -1,6 +1,6 @@
 #include <iostream>
-#include "lib/poly/line.h"
-#include "lib/poly/vector.h"
+#include "lib/poly/line.hpp"
+#include "lib/poly/vector.hpp"
 
 using namespace std;
 
