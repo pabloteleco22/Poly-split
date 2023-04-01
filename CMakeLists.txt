@@ -29,16 +29,16 @@ FetchContent_MakeAvailable(googletest)
 
 enable_testing()
 
-##------------------ POINT TEST ------------------##
-add_executable(point_test
-    test/point_test.cpp
+##------------------ POLY TEST ------------------##
+add_executable(poly_test
+    test/poly_test.cpp
 )
 
-target_link_libraries(point_test
+target_link_libraries(poly_test
     GTest::gtest_main
     Poly
 )
 ##------------------------------------------------##
 
 include(GoogleTest)
-gtest_discover_tests(point_test)
+gtest_discover_tests(poly_test)

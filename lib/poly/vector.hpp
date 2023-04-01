@@ -5,7 +5,7 @@
 #include <ostream>
 #include <vector>
 
-#define POLY_SPLIT_EPS 1E-6
+const double POLY_SPLIT_EPS = 1E-6;
 
 struct Vector {
     double x, y, z;
@@ -86,6 +86,10 @@ struct Vector {
 
     inline bool operator !=(const Vector &v) const {
         return fabs(x - v.x) >= POLY_SPLIT_EPS || fabs(y - v.y) >= POLY_SPLIT_EPS || fabs(z - v.z) >= POLY_SPLIT_EPS;
+    }
+
+    inline Vector abs() const {
+        return Vector{fabs(x), fabs(y), fabs(z)};
     }
 
     friend std::ostream& operator<< (std::ostream &out, const Vector &v) {

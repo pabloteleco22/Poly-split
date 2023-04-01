@@ -6,7 +6,7 @@
 
 class Line {
 private:
-    double A, B, C;
+    double A{0}, B{0}, C{0};
     Vector start, end;
 public:
     Line();
