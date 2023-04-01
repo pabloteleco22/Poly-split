@@ -5,48 +5,48 @@
 Line::Line() {}
 
 Line::Line(const Vector &start, const Vector &end) : start(start), end(end) {
-    A = start.y - end.y;
-    B = end.x - start.x;
-    C = start.x * end.y - end.x * start.y;
+    a = start.y - end.y;
+    b = end.x - start.x;
+    c = start.x * end.y - end.x * start.y;
 }
 
-Line::Line(double A, double B, double C) : A(A), B(B), C(C) {
-    if(fabs(A) <= POLY_SPLIT_EPS && fabs(B) >= POLY_SPLIT_EPS) {
+Line::Line(double a, double b, double c) : a(a), b(b), c(c) {
+    if(fabs(a) <= POLY_SPLIT_EPS && fabs(b) >= POLY_SPLIT_EPS) {
         start.x = -1000;
-        start.y = -(C / B);
+        start.y = -(c / b);
 
         end.x = 1000;
         end.y = start.y;
-    } else if(fabs(B) <= POLY_SPLIT_EPS && fabs(A) >= POLY_SPLIT_EPS) {
-        start.x = -(C / A);
+    } else if(fabs(b) <= POLY_SPLIT_EPS && fabs(a) >= POLY_SPLIT_EPS) {
+        start.x = -(c / a);
         start.y = -1000;
 
         end.x = start.x;
         end.y = 1000;
     } else {
         start.x = -1000;
-        start.y = -((A * start.x + C) / B);
+        start.y = -((a * start.x + c) / b);
 
         end.x = 1000;
-        end.y = -((A * end.x + C) / B);
+        end.y = -((a * end.x + c) / b);
     }
 }
 
 double Line::getDistance(const Vector &point) const {
-    double n = A * point.x + B * point.y + C;
-    double m = sqrt(A * A + B * B);
+    double n = a * point.x + b * point.y + c;
+    double m = sqrt(a * a + b * b);
     assert(m != 0);
     return n / m;
 }
 
 Vector Line::getLineNearestPoint(const Vector &point) const {
-    Vector dir(B, -A);
+    Vector dir(b, -a);
     double u = (point - start).dot(dir) / dir.squareLength();
     return start + dir * u;
 }
 
 Vector Line::getSegmentNearestPoint(const Vector &point) const {
-    Vector dir(B, -A);
+    Vector dir(b, -a);
     double u = (point - start).dot(dir) / dir.squareLength();
     if(u < 0)
         return start;
@@ -57,7 +57,7 @@ Vector Line::getSegmentNearestPoint(const Vector &point) const {
 }
 
 int Line::pointSide(const Vector &point) const {
-    double s = A * (point.x - start.x) + B * (point.y - start.y);
+    double s = a * (point.x - start.x) + b * (point.y - start.y);
     return (s > 0 ? 1 : (s < 0 ? -1 : 0));
 }
 
@@ -66,25 +66,25 @@ int Line::pointSide(const Vector &point) const {
 #define minimum(a, b) (((a) > (b)) ? (b) : (a))
 #define maximum(a, b) (((a) < (b)) ? (b) : (a))
 
-int Line::crossLineSegment(const Line &line, Vector &result) const {
-    double d = det(A, B, line.A, line.B);
+bool Line::crossLineSegment(const Line &line, Vector &result) const {
+    double d = det(a, b, line.a, line.b);
     if(d == 0)
-        return 0;
+        return false;
 
-    result.x = -det(C, B, line.C, line.B) / d;
-    result.y = -det(A, C, line.A, line.C) / d;
+    result.x = -det(c, b, line.c, line.b) / d;
+    result.y = -det(a, c, line.a, line.c) / d;
 
     return inside(result.x, minimum(line.start.x, line.end.x), maximum(line.start.x, line.end.x)) &&
             inside(result.y, minimum(line.start.y, line.end.y), maximum(line.start.y, line.end.y));
 }
 
-int Line::crossSegmentSegment(const Line &line, Vector &result) const {
-    double d = det(A, B, line.A, line.B);
+bool Line::crossSegmentSegment(const Line &line, Vector &result) const {
+    double d = det(a, b, line.a, line.b);
     if(d == 0)
-        return 0;
+        return false;
 
-    result.x = -det(C, B, line.C, line.B) / d;
-    result.y = -det(A, C, line.A, line.C) / d;
+    result.x = -det(c, b, line.c, line.b) / d;
+    result.y = -det(a, c, line.a, line.c) / d;
 
     return inside(result.x, minimum(start.x, end.x), maximum(start.x, end.x)) &&
            inside(result.y, minimum(start.y, end.y), maximum(start.y, end.y)) &&
@@ -92,30 +92,38 @@ int Line::crossSegmentSegment(const Line &line, Vector &result) const {
            inside(result.y, minimum(line.start.y, line.end.y), maximum(line.start.y, line.end.y));
 }
 
-int Line::crossLineLine(const Line &line, Vector &result) const {
-    double d = det(A, B, line.A, line.B);
+bool Line::crossLineLine(const Line &line, Vector &result) const {
+    double d = det(a, b, line.a, line.b);
     if(d == 0)
-        return 0;
+        return false;
 
-    result.x = -det(C, B, line.C, line.B) / d;
-    result.y = -det(A, C, line.A, line.C) / d;
+    result.x = -det(c, b, line.c, line.b) / d;
+    result.y = -det(a, c, line.a, line.c) / d;
 
-    return 1;
+    return true;
+}
+
+bool Line::is_same(const Line &l1, const Line &l2) {
+    return (l1.pointSide(l2.start) == 0) and (l1.pointSide(l2.end) == 0);
 }
 
 Line Line::getBisector(const Line &l1, const Line &l2) {
-    double q1 = sqrt(l1.A * l1.A + l1.B * l1.B);
-    double q2 = sqrt(l2.A * l2.A + l2.B * l2.B);
+    if (is_same(l1, l2)) {
+        return Line(l1);
+    } else {
+        double q1 = sqrt(l1.a * l1.a + l1.b * l1.b);
+        double q2 = sqrt(l2.a * l2.a + l2.b * l2.b);
 
-    double A = l1.A / q1 - l2.A / q2;
-    double B = l1.B / q1 - l2.B / q2;
-    double C = l1.C / q1 - l2.C / q2;
+        double a = l1.a / q1 - l2.a / q2;
+        double b = l1.b / q1 - l2.b / q2;
+        double c = l1.c / q1 - l2.c / q2;
 
-    return Line(A, B, C);
+        return Line(a, b, c);
+    }
 }
 
 double Line::getTanAngle(const Line &l1, const Line &l2) {
-    return (l1.A * l2.B - l2.A * l1.B) / (l1.A * l2.A + l1.B * l2.B);
+    return (l1.a * l2.b - l2.a * l1.b) / (l1.a * l2.a + l1.b * l2.b);
 }
 
 Vector Line::getStart() const {

@@ -5,41 +5,133 @@
 #include <ostream>
 
 class Line {
-private:
-    double A{0}, B{0}, C{0};
-    Vector start, end;
-public:
-    Line();
-    Line(const Vector &start, const Vector &end);
-    Line(double A, double B, double C);
+    private:
+        double a{0}; // -Increase of y
+        double b{0}; // Increase of x
+        double c{0}; // Determinant of the segment
+        Vector start, end;
 
-    Vector getStart() const;
-    Vector getEnd() const;
+    public:
+        Line();
+        Line(const Vector &start, const Vector &end);
+        Line(double a, double b, double c);
 
-    double length() const;
-    double squareLength() const;
+        /**
+         * @brief It returns the start point of the segment
+        */
+        Vector getStart() const;
 
-    Line reverse() const;
+        /**
+         * @brief It returns the end point of the segment
+        */
+        Vector getEnd() const;
 
-    Vector getPointAlong(double t) const;
-    double getDistance(const Vector &point) const;
-    Vector getLineNearestPoint(const Vector &point) const;
-    Vector getSegmentNearestPoint(const Vector &point) const;
+        /**
+         * @brief It returns the length of the segment
+        */
+        double length() const;
 
-    int pointSide(const Vector &point) const;
-    int crossLineSegment(const Line &line, Vector &result) const;
-    int crossSegmentSegment(const Line &line, Vector &result) const;
-    int crossLineLine(const Line &line, Vector &result) const;
+        /**
+         * @brief It returns the square of the length of the segment
+        */
+        double squareLength() const;
 
-    static Line getBisector(const Line &l1, const Line &l2);
-    static double getTanAngle(const Line &l1, const Line &l2);
+        /**
+         * @brief It returns the same segment but the start point is
+         * the new end point and vice versa
+        */
+        Line reverse() const;
 
-    static Line directedLine(const Vector &p, const Vector &d);
+        /**
+         * @brief Returns a point on the line one distance t away from
+         * the start point
+        */
+        Vector getPointAlong(double t) const;
 
-    friend std::ostream& operator<< (std::ostream &out, const Line &l) {
-        out << "[" << l.A << ", " << l.B << ", " << l.C << "]-{" << l.start << ", " << l.end << "}";
-        return out;
-    }
+        /**
+         * @brief Returns the distance between the point and the line
+        */
+        double getDistance(const Vector &point) const;
+
+        /**
+         * @brief Returns the nearest point from the line
+        */
+        Vector getLineNearestPoint(const Vector &point) const;
+
+        /**
+         * @brief Returns the nearest point from the segment,
+         * which means that it takes into account the start
+         * and end points
+        */
+        Vector getSegmentNearestPoint(const Vector &point) const;
+
+        /**
+         * @brief Returns if the point is over, under or in the line
+         * 
+         * @returns
+         *  1 if above,
+         *  0 if in,
+         *  -1 if below
+        */
+        int pointSide(const Vector &point) const;
+
+        /**
+         * @brief Returns whether the line and the segment intersect and
+         * the point of intersection between them
+         * 
+         * @param 
+         * line: The line, not the segment.
+         *
+         * @param
+         * result: The intersection point.
+         * 
+         * @return If the line and the segment intersect
+        */
+        bool crossLineSegment(const Line &line, Vector &result) const;
+
+        /**
+         * @brief Returns whether the thw segments intersect and
+         * the point of intersection between them
+         * 
+         * @param
+         * result: The intersection point.
+         * 
+         * @return If the line and the segment intersect
+        */
+        bool crossSegmentSegment(const Line &line, Vector &result) const;
+
+        /**
+         * @brief Returns whether the two lines intersect and
+         * the point of intersection between them
+         * 
+         * @param
+         * result: The intersection point.
+         * 
+         * @return If the line and the segment intersect
+        */
+        bool crossLineLine(const Line &line, Vector &result) const;
+
+        /**
+         * @brief Returns true if l1 and l2 are the same line
+        */
+        static bool is_same(const Line &l1, const Line &l2);
+
+        /**
+         * @brief Returns the bisector between the two lines
+        */
+        static Line getBisector(const Line &l1, const Line &l2);
+
+        /**
+         * @brief Returns the tangent of the angle between the two lines in radians
+        */
+        static double getTanAngle(const Line &l1, const Line &l2);
+
+        static Line directedLine(const Vector &p, const Vector &d);
+
+        friend std::ostream& operator<< (std::ostream &out, const Line &l) {
+            out << "[" << l.a << ", " << l.b << ", " << l.c << "]-{" << l.start << ", " << l.end << "}";
+            return out;
+        }
 };
 
 #endif // LINE_H
