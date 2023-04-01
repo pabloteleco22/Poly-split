@@ -99,7 +99,6 @@ int Line::crossLineLine(const Line &line, Vector &result) const {
 
     result.x = -det(C, B, line.C, line.B) / d;
     result.y = -det(A, C, line.A, line.C) / d;
-    result.z = 0; // TODO: Check
 
     return 1;
 }
@@ -130,17 +129,15 @@ Vector Line::getEnd() const {
 double Line::length() const {
     double x = end.x - start.x;
     double y = end.y - start.y;
-    double z = end.z - start.z;
 
-    return sqrt(x * x + y * y + z * z);
+    return sqrt(x * x + y * y);
 }
 
 double Line::squareLength() const {
     double x = end.x - start.x;
     double y = end.y - start.y;
-    double z = end.z - start.z;
 
-    return x * x + y * y + z * z;
+    return x * x + y * y;
 }
 
 Line Line::reverse() const {

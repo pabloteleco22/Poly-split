@@ -8,68 +8,68 @@
 const double POLY_SPLIT_EPS = 1E-6;
 
 struct Vector {
-    double x, y, z;
+    double x, y;
 
-    Vector(double x = 0.0f, double y = 0.0f, double z = 0.0f) : x(x), y(y), z(z) {}
+    Vector(double x = 0.0f, double y = 0.0f) : x(x), y(y) {};
 
     inline Vector operator-() const {
-        return Vector(-x, -y, -z);
+        return Vector(-x, -y);
     }
 
     inline Vector &operator+=(const Vector &v) {
         x += v.x;
         y += v.y;
-        z += v.z;
+
         return *this;
     }
 
     inline Vector &operator-=(const Vector &v) {
         x -= v.x;
         y -= v.y;
-        z -= v.z;
+
         return *this;
     }
 
     inline Vector &operator*=(double v) {
         x *= v;
         y *= v;
-        z *= v;
+
         return *this;
     }
 
     inline Vector &operator/=(double v) {
         x /= v;
         y /= v;
-        z /= v;
+
         return *this;
     }
 
     inline Vector operator-(const Vector &v) const {
-        return Vector(x - v.x, y - v.y, z - v.z);
+        return Vector(x - v.x, y - v.y);
     }
 
     inline Vector operator+(const Vector &v) const {
-        return Vector(x + v.x, y + v.y, z + v.z);
+        return Vector(x + v.x, y + v.y);
     }
 
     inline Vector operator*(const double v) const {
-        return Vector(x * v, y * v, z * v);
+        return Vector(x * v, y * v);
     }
 
     inline Vector operator/(const double v) const {
-        return Vector(x / v, y / v, z / v);
+        return Vector(x / v, y / v);
     }
 
     inline double dot(const Vector &v) const {
-        return x * v.x + y * v.y + z * v.z;
+        return x * v.x + y * v.y;
     }
 
     inline double length(void) const {
-        return sqrt(x * x + y * y + z * z);
+        return sqrt(x * x + y * y);
     }
 
     inline double squareLength(void) const {
-        return x * x + y * y + z * z;
+        return x * x + y * y;
     }
 
     inline Vector norm(void) const {
@@ -77,23 +77,23 @@ struct Vector {
         if(l == 0)
             return Vector();
         else
-            return Vector(x / l, y / l, z / l);
+            return Vector(x / l, y / l);
     }
 
     inline bool operator ==(const Vector &v) const {
-        return x == v.x && y == v.y && z == v.z;
+        return x == v.x && y == v.y;
     }
 
     inline bool operator !=(const Vector &v) const {
-        return fabs(x - v.x) >= POLY_SPLIT_EPS || fabs(y - v.y) >= POLY_SPLIT_EPS || fabs(z - v.z) >= POLY_SPLIT_EPS;
+        return fabs(x - v.x) >= POLY_SPLIT_EPS || fabs(y - v.y) >= POLY_SPLIT_EPS;
     }
 
     inline Vector abs() const {
-        return Vector{fabs(x), fabs(y), fabs(z)};
+        return Vector{fabs(x), fabs(y)};
     }
 
     friend std::ostream& operator<< (std::ostream &out, const Vector &v) {
-        out << "(" << v.x << ", " << v.y << ", " << v.z << ")";
+        out << "(" << v.x << ", " << v.y << ")";
         return out;
     }
 };
