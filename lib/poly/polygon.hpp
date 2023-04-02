@@ -84,6 +84,17 @@ public:
      * within the edges of the polygon. 
     */
     bool isPointInside(const Vector &point) const;
+
+    /**
+     * @brief Returns true if the segment passed by parameters is contained
+     * within the edges of the polygon. 
+     * 
+     * @param
+     * excludeLine1: The index of the first segment to be disregarded in the analysis.
+     * @param
+     * excludeLine2: The index of the second segment to be disregarded in the analysis.
+    */
+    bool isSegmentInside(const Line &segment, size_t excludeLine1, size_t excludeLine2) const;
     
     /**
      * @brief Returns true if the vertex are in clock wise order.

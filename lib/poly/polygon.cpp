@@ -188,7 +188,7 @@ void createSubPoly(const Vectors &poly, int line1, int line2, Polygon &poly1, Po
 
     int polySize{static_cast<int>(poly.size())};
     int pc2{polySize - pc1};
-    for(int i = 1; i <= pc2; i++) {
+    for (int i = 1; i <= pc2; i++) {
         poly2.push_back(poly[(i + line2) % polySize]);
     }
 }
@@ -200,7 +200,7 @@ bool isPointInsidePoly(const Vectors &poly, const Vector &point) {
     Line l{ Line::directedLine(point, Vector{0.0, 1e100})};
     int result{0};
     Vector v;
-    for(int i = 0; i < pointsCount; i++) {
+    for (int i = 0; i < pointsCount; i++) {
         Line line{poly[i], poly[i + 1]};
         result += l.crossSegmentSegment(line, v);
     }
@@ -211,12 +211,16 @@ bool isPointInsidePoly(const Vectors &poly, const Vector &point) {
 
 int isSegmentInsidePoly(const Vectors &poly, const Line &l, size_t excludeLine1, size_t excludeLine2) {
     size_t pointsCount{poly.size()};
-    for(size_t i = 0; i < pointsCount; i++) {
-        if(i != excludeLine1 && i != excludeLine2) {
+
+    if (pointsCount < 3)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
+    for (size_t i = 0; i < pointsCount; i++) {
+        if (i != excludeLine1 && i != excludeLine2) {
             Vector p1{poly[i]};
             Vector p2{poly[i + 1 < pointsCount ? i + 1 : 0]};
             Vector p;
-            if((Line(p1, p2).crossSegmentSegment(l, p)) and
+            if ((Line(p1, p2).crossSegmentSegment(l, p)) and
                 ((p1 - p).squareLength() > POLY_SPLIT_EPS) and
                 ((p2 - p).squareLength() > POLY_SPLIT_EPS)) {
                 return 0;
@@ -306,7 +310,7 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine
 
             if(getCut(l1, l2, square, p1, p2, cut)) {
                 double sqLength{cut.squareLength()};
-                if(sqLength < minSqLength && isSegmentInsidePoly(polygon, cut, i, j)) {
+                if(sqLength < minSqLength && isSegmentInside(cut, i, j)) {
                     minSqLength = sqLength;
                     poly1 = p1;
                     poly2 = p2;
@@ -443,6 +447,27 @@ bool Polygon::isPointInside(const Vector &point) const {
     Line line{vertex[pointsCount], vertex[0]};
     result += l.crossSegmentSegment(line, v);
     return result % 2 != 0;
+}
+
+bool Polygon::isSegmentInside(const Line &segment, size_t excludeLine1, size_t excludeLine2) const {
+    size_t pointsCount{vertex.size()};
+
+    if (pointsCount < 3)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
+    for (size_t i = 0; i < pointsCount; i++) {
+        if (i != excludeLine1 && i != excludeLine2) {
+            Vector p1{vertex[i]};
+            Vector p2{vertex[i + 1 < pointsCount ? i + 1 : 0]};
+            Vector p;
+            if ((Line(p1, p2).crossSegmentSegment(segment, p)) and
+                ((p1 - p).squareLength() > POLY_SPLIT_EPS) and
+                ((p2 - p).squareLength() > POLY_SPLIT_EPS)) {
+                return 0;
+            }
+        }
+    }
+    return isPointInside(segment.getPointAlong(0.5));
 }
 
 bool Polygon::isClockwise() const {
