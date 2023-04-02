@@ -1,14 +1,11 @@
 #include <gtest/gtest.h>
 #include "../lib/poly/vector.hpp"
 #include "../lib/poly/line.hpp"
-#include <iostream>
-
-using namespace std;
 
 TEST(VectorTest, DefaultVector) {
     Vector vec;
-    ASSERT_EQ(vec.x, 0.0);
-    ASSERT_EQ(vec.y, 0.0);
+    ASSERT_EQ(vec.x, 0);
+    ASSERT_EQ(vec.y, 0);
 }
 
 TEST(VectorTest, CustomVector) {
@@ -56,15 +53,15 @@ TEST(VectorTest, Absolute) {
 
 TEST(LineTest, DefaultLine) {
     Line lin;
-    Vector expected_point{0.0, 0.0};
+    Vector expected_point{0, 0};
 
     ASSERT_EQ(lin.getStart(), expected_point);
     ASSERT_EQ(lin.getEnd(), expected_point);
 }
 
 TEST(LineTest, CustomLine) {
-    Vector start_point{5.0, 8.0};
-    Vector end_point{8.9, 3.0};
+    Vector start_point{5, 8};
+    Vector end_point{8.9, 3};
     Line lin{start_point, end_point};
 
     ASSERT_EQ(lin.getStart(), start_point);
@@ -72,8 +69,8 @@ TEST(LineTest, CustomLine) {
 }
 
 TEST(LineTest, reverse) {
-    Vector start_point{5.0, 8.0};
-    Vector end_point{8.9, 3.0};
+    Vector start_point{5, 8};
+    Vector end_point{8.9, 3};
     Line lin{start_point, end_point};
 
     ASSERT_EQ(lin.reverse().getStart(), end_point);
@@ -81,8 +78,8 @@ TEST(LineTest, reverse) {
 }
 
 TEST(LineTest, Length) {
-    Vector start_point{5.0, 8.0};
-    Vector end_point{8.0, 3.0};
+    Vector start_point{5, 8};
+    Vector end_point{8, 3};
     Line lin{start_point, end_point};
     Vector distance_vector{end_point - start_point};
 
@@ -93,19 +90,19 @@ TEST(LineTest, Length) {
 
 TEST(LineTest, PointAlong) {
     Vector start_point;
-    Vector end_point{25.0, 25.0};
+    Vector end_point{25, 25};
     Line lin{start_point, end_point};
 
     Vector expected_point{8.48528137423857, 8.48528137423857};
-    Vector result = lin.getPointAlong(12.0);
+    Vector result = lin.getPointAlong(12);
 
     ASSERT_EQ(result, expected_point);
 }
 
 TEST(LineTest, DistanceIn) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{2.0, 4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{2, 4};
     Line lin{start_point, end_point};
 
     double expected_distance{1.414213562};
@@ -115,8 +112,8 @@ TEST(LineTest, DistanceIn) {
 
 TEST(LineTest, DistanceOut) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{-2.0, -4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{-2, -4};
     Line lin{start_point, end_point};
 
     double expected_distance{1.414213562};
@@ -126,48 +123,48 @@ TEST(LineTest, DistanceOut) {
 
 TEST(LineTest, LineNearestPointIn) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{2.0, 4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{2, 4};
     Line lin{start_point, end_point};
-    Vector expected_point{3.0, 3.0};
+    Vector expected_point{3, 3};
 
     ASSERT_EQ(lin.getLineNearestPoint(distance_point), expected_point);
 }
 
 TEST(LineTest, LineNearestPointOut) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{-2.0, -4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{-2, -4};
     Line lin{start_point, end_point};
-    Vector expected_point{-3.0, -3.0};
+    Vector expected_point{-3, -3};
 
     ASSERT_EQ(lin.getLineNearestPoint(distance_point), expected_point);
 }
 
 TEST(LineTest, SegmentNearestPoint) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{2.0, 4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{2, 4};
     Line lin{start_point, end_point};
-    Vector expected_point{3.0, 3.0};
+    Vector expected_point{3, 3};
 
     ASSERT_EQ(lin.getSegmentNearestPoint(distance_point), expected_point);
 }
 
 TEST(LineTest, SegmentNearestPointOut) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{-2.0, -4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{-2, -4};
     Line lin{start_point, end_point};
-    Vector expected_point{0.0, 0.0};
+    Vector expected_point{0, 0};
 
     ASSERT_EQ(lin.getSegmentNearestPoint(distance_point), expected_point);
 }
 
 TEST(LineTest, PointSideAbove) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{2.0, 4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{2, 4};
     Line lin{start_point, end_point};
     int expected_result{1};
 
@@ -176,8 +173,8 @@ TEST(LineTest, PointSideAbove) {
 
 TEST(LineTest, PointSideBelow) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{-2.0, -4.0};
+    Vector end_point{10, 10};
+    Vector distance_point{-2, -4};
     Line lin{start_point, end_point};
     int expected_result{-1};
 
@@ -186,8 +183,8 @@ TEST(LineTest, PointSideBelow) {
 
 TEST(LineTest, PointSideInside) {
     Vector start_point;
-    Vector end_point{10.0, 10.0};
-    Vector distance_point{-1.0, -1.0};
+    Vector end_point{10, 10};
+    Vector distance_point{-1, -1};
     Line lin{start_point, end_point};
     int expected_result{0};
 
@@ -196,9 +193,9 @@ TEST(LineTest, PointSideInside) {
 
 TEST(LineTest, CrossLineLineTrue) {
     Vector start_point1;
-    Vector end_point1{4.0, 4.0};
-    Vector start_point2{0.0, 4.0};
-    Vector end_point2{6.0, 0.0};
+    Vector end_point1{4, 4};
+    Vector start_point2{0, 4};
+    Vector end_point2{6, 0};
     Vector inter_point;
     Vector expected_inter_point{2.4, 2.4};
     Line lin1{start_point1, end_point1};
@@ -210,9 +207,9 @@ TEST(LineTest, CrossLineLineTrue) {
 
 TEST(LineTest, CrossLineLineFalse) {
     Vector start_point1;
-    Vector end_point1{4.0, 4.0};
-    Vector start_point2{0.0, 4.0};
-    Vector end_point2{-4.0, 0.0};
+    Vector end_point1{4, 4};
+    Vector start_point2{0, 4};
+    Vector end_point2{-4, 0};
     Vector inter_point;
     Line lin1{start_point1, end_point1};
     Line lin2{start_point2, end_point2};
@@ -222,9 +219,9 @@ TEST(LineTest, CrossLineLineFalse) {
 
 TEST(LineTest, CrossLineSegmentTrue) {
     Vector line_start_point;
-    Vector line_end_point{4.0, 4.0};
-    Vector segment_start_point{0.0, 4.0};
-    Vector segment_end_point{6.0, 0.0};
+    Vector line_end_point{4, 4};
+    Vector segment_start_point{0, 4};
+    Vector segment_end_point{6, 0};
     Vector inter_point;
     Vector expected_inter_point{2.4, 2.4};
     Line line{line_start_point, line_end_point};
@@ -236,9 +233,9 @@ TEST(LineTest, CrossLineSegmentTrue) {
 
 TEST(LineTest, CrossLineSegmentFalse) {
     Vector line_start_point;
-    Vector line_end_point{4.0, 4.0};
-    Vector segment_start_point{0.0, 6.0};
-    Vector segment_end_point{18.0, 0.0};
+    Vector line_end_point{4, 4};
+    Vector segment_start_point{0, 6};
+    Vector segment_end_point{18, 0};
     Vector inter_point;
     Line line{line_start_point, line_end_point};
     Line segment{segment_start_point, segment_end_point};
@@ -248,9 +245,9 @@ TEST(LineTest, CrossLineSegmentFalse) {
 
 TEST(LineTest, CrossSegmentSegmentTrue) {
     Vector start_point1;
-    Vector end_point1{4.0, 4.0};
-    Vector start_point2{0.0, 4.0};
-    Vector end_point2{6.0, 0.0};
+    Vector end_point1{4, 4};
+    Vector start_point2{0, 4};
+    Vector end_point2{6, 0};
     Vector inter_point;
     Vector expected_inter_point{2.4, 2.4};
     Line segment1{start_point1, end_point1};
@@ -262,9 +259,9 @@ TEST(LineTest, CrossSegmentSegmentTrue) {
 
 TEST(LineTest, CrossSegmentSegmentFalse1) {
     Vector start_point1;
-    Vector end_point1{4.0, 4.0};
-    Vector start_point2{0.0, 6.0};
-    Vector end_point2{18.0, 0.0};
+    Vector end_point1{4, 4};
+    Vector start_point2{0, 6};
+    Vector end_point2{18, 0};
     Vector inter_point;
     Vector expected_inter_point{2.4, 2.4};
     Line segment1{start_point1, end_point1};
@@ -274,10 +271,10 @@ TEST(LineTest, CrossSegmentSegmentFalse1) {
 }
 
 TEST(LineTest, CrossSegmentSegmentFalse2) {
-    Vector start_point1{0.0, 6.0};
-    Vector end_point1{18.0, 0.0};
+    Vector start_point1{0, 6};
+    Vector end_point1{18, 0};
     Vector start_point2;
-    Vector end_point2{4.0, 4.0};
+    Vector end_point2{4, 4};
     Vector inter_point;
     Vector expected_inter_point{2.4, 2.4};
     Line segment1{start_point1, end_point1};
@@ -288,9 +285,9 @@ TEST(LineTest, CrossSegmentSegmentFalse2) {
 
 TEST(LineTest, IsSameTrue) {
     Vector start_point1;
-    Vector end_point1{2.0, 4.0};
+    Vector end_point1{2, 4};
     Vector start_point2;
-    Vector end_point2{4.0, 8.0};
+    Vector end_point2{4, 8};
     Line line1{start_point1, end_point1};
     Line line2{start_point2, end_point2};
 
@@ -299,9 +296,9 @@ TEST(LineTest, IsSameTrue) {
 
 TEST(LineTest, IsSameFalse) {
     Vector start_point1;
-    Vector end_point1{2.0, 4.0};
+    Vector end_point1{2, 4};
     Vector start_point2;
-    Vector end_point2{4.0, 8.1};
+    Vector end_point2{4, 8.1};
     Line line1{start_point1, end_point1};
     Line line2{start_point2, end_point2};
 
@@ -310,26 +307,26 @@ TEST(LineTest, IsSameFalse) {
 
 TEST(LineTest, Bisector1) {
     Vector start_point1;
-    Vector end_point1{0.0, 1.0};
+    Vector end_point1{0, 1};
     Vector start_point2;
-    Vector end_point2{1.0, 0.0};
+    Vector end_point2{1, 0};
     Line line1{start_point1, end_point1};
     Line line2{start_point2, end_point2};
 
     Vector expected_start_point;
-    Vector expected_end_point{1.0, -1.0};
+    Vector expected_end_point{1, -1};
     Line expected_bisector{expected_start_point, expected_end_point};
 
     Line returned = Line::getBisector(line1, line2);
     Vector inter;
 
     ASSERT_FALSE(returned.crossLineLine(expected_bisector, inter));
-    ASSERT_EQ(returned.getDistance(expected_end_point), 0.0);
+    ASSERT_EQ(returned.getDistance(expected_end_point), 0);
 }
 
 TEST(LineTest, Bisector2) {
     Vector start_point;
-    Vector end_point{0.0, 1.0};
+    Vector end_point{0, 1};
     Line line{start_point, end_point};
 
     Vector expected_start_point;
@@ -340,12 +337,12 @@ TEST(LineTest, Bisector2) {
     Vector inter;
 
     ASSERT_FALSE(returned.crossLineLine(expected_bisector, inter));
-    ASSERT_EQ(returned.getDistance(expected_end_point), 0.0);
+    ASSERT_EQ(returned.getDistance(expected_end_point), 0);
 }
 
 TEST(LineTest, TanAngleZero) {
     Vector start_point;
-    Vector end_point{0.0, 1.0};
+    Vector end_point{0, 1};
     Line line{start_point, end_point};
 
     const double expected_tan{0};
@@ -354,16 +351,25 @@ TEST(LineTest, TanAngleZero) {
 }
 
 TEST(LineTest, TanAngle1) {
-    Vector start_point1;
-    Vector end_point1{0.0, 1.0};
-    Vector start_point2;
-    Vector end_point2{1.0, 1.0};
-    Line line1{start_point1, end_point1};
-    Line line2{start_point2, end_point2};
+    const Vector start_point1;
+    const Vector end_point1{0, 1};
+    const Vector start_point2;
+    const Vector end_point2{1, 1};
+    const Line line1{start_point1, end_point1};
+    const Line line2{start_point2, end_point2};
 
-    const double expected_tan{-1.0};
+    const double expected_tan{-1};
 
     ASSERT_EQ(Line::getTanAngle(line1, line2), expected_tan);
 }
 
-// TODO: Falta test para directedLine
+TEST(LineTest, DirectedLine) {
+    const Vector point{1, 2};
+    const Vector vector{1, 1};
+    const Line result_line = Line::directedLine(point, vector);
+    const Vector expected_start_point{1, 2};
+    const Vector expected_end_point{4.5, 5.5};
+    const Line expected_line{expected_start_point, expected_end_point};
+
+    ASSERT_TRUE(Line::is_same(result_line, expected_line));
+}

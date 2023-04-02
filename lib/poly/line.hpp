@@ -2,7 +2,6 @@
 #define LINE_H
 
 #include "vector.hpp"
-#include <ostream>
 
 class Line {
     private:
@@ -126,6 +125,14 @@ class Line {
         */
         static double getTanAngle(const Line &l1, const Line &l2);
 
+        /**
+         * @brief Returns a line from a point and a vector
+         * 
+         * @param
+         * p: Point
+         * @param
+         * d: Vector
+        */
         static Line directedLine(const Vector &p, const Vector &d);
 
         friend std::ostream& operator<< (std::ostream &out, const Line &l) {
