@@ -457,7 +457,7 @@ TEST(PolygonTest, FindEmptyDistance) {
 
     const Vector point{2, 3};
 
-    ASSERT_THROW(poly.findDistance(point), Polygon::VoidPolygonException);
+    ASSERT_THROW(poly.findDistance(point), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, FindNearestPointOutside) {
@@ -494,7 +494,7 @@ TEST(PolygonTest, FindEmptyNearestPoint) {
 
     const Vector point{3, 3};
 
-    ASSERT_THROW(poly.findNearestPoint(point), Polygon::VoidPolygonException);
+    ASSERT_THROW(poly.findNearestPoint(point), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, FindCenter) {
@@ -516,5 +516,103 @@ TEST(PolygonTest, FindCenterEmpty) {
 
     const Vector expected_point{};
 
-    ASSERT_THROW(poly.countCenter(), Polygon::VoidPolygonException);
+    ASSERT_THROW(poly.countCenter(), Polygon::NotEnoughPointsException);
+}
+
+TEST(PolygonTest, SplitNearestEdge) {
+    Vectors points;
+    points.push_back(Vector{});
+    points.push_back(Vector{2, 0});
+    points.push_back(Vector{2, 2});
+    points.push_back(Vector{0, 2});
+    Polygon poly{points};
+
+    const Vector split_point{4, 1};
+    const Vector expected_point{2, 1};
+    const size_t expected_size{5};
+
+    poly.splitNearestEdge(split_point);
+
+    ASSERT_EQ(poly[2], expected_point);
+    ASSERT_EQ(poly.size(), expected_size);
+}
+
+TEST(PolygonTest, SplitNearestEdgeCorner) {
+    Vectors points;
+    points.push_back(Vector{});
+    points.push_back(Vector{2, 0});
+    points.push_back(Vector{2, 2});
+    points.push_back(Vector{0, 2});
+    Polygon poly{points};
+
+    const Vector split_point{4, 4};
+    const size_t expected_size{4};
+
+    poly.splitNearestEdge(split_point);
+
+    ASSERT_EQ(poly.size(), expected_size);
+}
+
+TEST(PolygonTest, IsPointInsideTrue) {
+    Vectors pol_points;
+    pol_points.push_back(Vector{});
+    pol_points.push_back(Vector{2, 0});
+    pol_points.push_back(Vector{2, 2});
+    pol_points.push_back(Vector{0, 2});
+    const Polygon pol{pol_points};
+
+    const Vector point{1, 1};
+
+    ASSERT_TRUE(pol.isPointInside(point));
+}
+
+TEST(PolygonTest, IsPointInsideFalse) {
+    Vectors pol_points;
+    pol_points.push_back(Vector{});
+    pol_points.push_back(Vector{2, 0});
+    pol_points.push_back(Vector{2, 2});
+    pol_points.push_back(Vector{0, 2});
+    const Polygon pol{pol_points};
+
+    const Vector point{-1, 1};
+
+    ASSERT_FALSE(pol.isPointInside(point));
+}
+
+TEST(PolygonTest, IsPointInsideException) {
+    Vectors pol_points;
+    const Polygon pol{pol_points};
+
+    const Vector point{-1, 1};
+
+    ASSERT_THROW(pol.isPointInside(point), Polygon::NotEnoughPointsException);
+}
+
+TEST(PolygonTest, IsClockWiseTrue) {
+    Vectors pol_points;
+    pol_points.push_back(Vector{});
+    pol_points.push_back(Vector{2, 0});
+    pol_points.push_back(Vector{2, 2});
+    pol_points.push_back(Vector{0, 2});
+    const Polygon pol{pol_points};
+
+    ASSERT_TRUE(pol.isClockwise());
+}
+
+TEST(PolygonTest, IsClockWiseFalse) {
+    Vectors pol_points;
+    pol_points.push_back(Vector{0, 2});
+    pol_points.push_back(Vector{2, 2});
+    pol_points.push_back(Vector{2, 0});
+    pol_points.push_back(Vector{});
+    const Polygon pol{pol_points};
+
+    ASSERT_FALSE(pol.isClockwise());
+}
+
+TEST(PolygonTest, IsClockWiseException) {
+    Vectors pol_points;
+    const Polygon pol{pol_points};
+
+    ASSERT_THROW(pol.isClockwise(), Polygon::NotEnoughPointsException);
 }

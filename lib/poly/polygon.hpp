@@ -7,24 +7,23 @@
 
 class Polygon {
 private:
-    Vectors poly;
+    Vectors vertex;
 
 public:
     Polygon();
 
     Polygon(const Vectors &v);
 
-    class VoidPolygonException : public std::exception {
-        std::string message{"The polygon has no vertices"};
+    class NotEnoughPointsException : public std::exception {
+        std::string message{"The polygon has not enough vertices"};
         public:
-            VoidPolygonException();
-            VoidPolygonException(const std::string &message);
-            VoidPolygonException(const char *message);
+            NotEnoughPointsException();
+            NotEnoughPointsException(const std::string &message);
+            NotEnoughPointsException(const char *message);
             const char *what() const noexcept override;
     };
-
-    /**
-     * @brief Returns the polygon area
+/**
+     * @brief Returns the polygon area.
     */
     double countSquare(void) const;
     double countSquare_signed(void) const;
@@ -48,47 +47,91 @@ public:
     */
     bool split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const;
 
+    /**
+     * @brief Returns the distance between the nearest point of the polygon
+     * and the point passed by parameters.
+     * 
+     * @throws
+     * Polygon::VoidPolygonExcception: if the polygon contains no points.
+    */
     double findDistance(const Vector &point) const;
+
+    /**
+     * @brief Returns the point of the polygon nearest to the one passed by
+     * parameters.
+     * 
+     * @throws
+     * Polygon::VoidPolygonExcception: if the polygon contains no points.
+    */
     Vector findNearestPoint(const Vector &point) const;
 
+    /**
+     * @brief Returns the centroid of the polygon.
+     * 
+     * @throws
+     * Polygon::VoidPolygonExcception: if the polygon contains no points.
+    */
     Vector countCenter(void) const;
 
+    /**
+     * @brief Generates a new vertex in the polygon at the nearest point
+     * between the passed by parameter and the edge of the polygon.
+    */
     void splitNearestEdge(const Vector &point);
 
-    int isPointInside(const Vector &point) const;
-    int isClockwise(void) const;
+    /**
+     * @brief Returns true if the point passed by parameters is contained
+     * within the edges of the polygon. 
+    */
+    bool isPointInside(const Vector &point) const;
+    
+    /**
+     * @brief Returns true if the vertex are in clock wise order.
+    */
+    bool isClockwise(void) const;
 
-    const Vectors &getVectors(void) const {
-        return poly;
+    const Vectors getVectors(void) const {
+        return vertex;
     }
 
-    void push_back(const Vector &v) {
-        poly.push_back(v);
+    /**
+     * @brief If the point passed by parameters was not a vertex of the
+     * polygon, now it is.
+    */
+    void push_back(const Vector &point);
+
+    /**
+     * @brief Returns true if the polygon has no vertex.
+    */
+    bool empty(void) const {
+        return vertex.empty();
     }
 
-    int empty(void) const {
-        return poly.empty();
-    }
-
-    Vector &operator [](size_t index) {
-        return poly[index];
-    }
-
-    Polygon &operator =(const Polygon &p) {
-        poly = p.poly;
+    Polygon &operator=(const Polygon &p) {
+        vertex = p.vertex;
         return *this;
     }
 
-    Vector operator [](size_t index) const {
-        return poly[index];
+    Vector operator[](size_t index) const {
+        return vertex[index];
     }
 
+    Vector &operator[](size_t index) {
+        return vertex[index];
+    }
+
+    /**
+     * @brief Removes all the vertex of the polygon.
+    */
     void clear(void) {
-        poly.clear();
+        vertex.clear();
     }
 
+    /**
+     * @brief Returns the number of vertex of the polygon.
+    */
     size_t size(void) const {
-        return poly.size();
+        return vertex.size();
     }
 };
 

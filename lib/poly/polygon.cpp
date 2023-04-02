@@ -194,8 +194,9 @@ void createSubPoly(const Vectors &poly, int line1, int line2, Polygon &poly1, Po
 }
 
 
-int isPointInsidePoly(const Vectors &poly, const Vector &point) {
+bool isPointInsidePoly(const Vectors &poly, const Vector &point) {
     int pointsCount{static_cast<int>(poly.size()) - 1};
+
     Line l{ Line::directedLine(point, Vector{0.0, 1e100})};
     int result{0};
     Vector v;
@@ -225,34 +226,21 @@ int isSegmentInsidePoly(const Vectors &poly, const Line &l, size_t excludeLine1,
     return isPointInsidePoly(poly, l.getPointAlong(0.5));
 }
 
-Vector polygonCentroid(const Vectors& points) {
-    int n{static_cast<int>(points.size())};
-
-    if (n <= 0) {
-        throw Polygon::VoidPolygonException{};
-    }
-
-    Vector result;
-    for(int i = 0; i < n; i++)
-        result += points[i];
-    result /= n;
-
-    return result;
-}
 
 
 
-Polygon::VoidPolygonException::VoidPolygonException() {}
 
-Polygon::VoidPolygonException::VoidPolygonException(const std::string &message) {
+Polygon::NotEnoughPointsException::NotEnoughPointsException() {}
+
+Polygon::NotEnoughPointsException::NotEnoughPointsException(const std::string &message) {
     this->message = std::string{message};
 }
 
-Polygon::VoidPolygonException::VoidPolygonException(const char *message) {
+Polygon::NotEnoughPointsException::NotEnoughPointsException(const char *message) {
     this->message = std::string{message};
 }
 
-const char *Polygon::VoidPolygonException::what() const noexcept {
+const char *Polygon::NotEnoughPointsException::what() const noexcept {
     return message.c_str();
 }
 
@@ -260,11 +248,11 @@ const char *Polygon::VoidPolygonException::what() const noexcept {
 Polygon::Polygon() {}
 
 Polygon::Polygon(const Vectors &v) {
-    poly = v;
+    vertex = v;
 }
 
 double Polygon::countSquare_signed(void) const {
-    size_t pointsCount{poly.size()};
+    size_t pointsCount{vertex.size()};
     if(pointsCount < 3) {
         return 0;
     }
@@ -272,11 +260,11 @@ double Polygon::countSquare_signed(void) const {
     double result{0};
     for(size_t i = 0; i < pointsCount; i++) {
         if(i == 0)
-            result += poly[i].x * (poly[pointsCount - 1].y - poly[i + 1].y);
+            result += vertex[i].x * (vertex[pointsCount - 1].y - vertex[i + 1].y);
         else if (i == pointsCount - 1)
-            result += poly[i].x * (poly[i - 1].y - poly[0].y);
+            result += vertex[i].x * (vertex[i - 1].y - vertex[0].y);
         else
-            result += poly[i].x * (poly[i - 1].y - poly[i + 1].y);
+            result += vertex[i].x * (vertex[i - 1].y - vertex[i + 1].y);
     }
 
     return result / 2.0;
@@ -287,9 +275,9 @@ double Polygon::countSquare() const {
 }
 
 bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const {
-    int polygonSize{static_cast<int>(poly.size())};
+    int polygonSize{static_cast<int>(vertex.size())};
 
-    Vectors polygon{poly};
+    Vectors polygon{vertex};
     if(!isClockwise()) {
         std::reverse(polygon.begin(), polygon.end());
     }
@@ -344,35 +332,37 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine
 }
 
 double Polygon::findDistance(const Vector &point) const {
-    double distance{DBL_MAX};
-    int poly_size{static_cast<int>(poly.size())};
+    double distance{std::numeric_limits<double>::infinity()};
+    int poly_size{static_cast<int>(vertex.size())};
+    if (poly_size < 2)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
     for(int i = 0; i < poly_size - 1; i++) {
-        Line line{poly[i], poly[i + 1]};
+        Line line{vertex[i], vertex[i + 1]};
         Vector p{line.getSegmentNearestPoint(point)};
         double l{(p - point).length()};
         if(l < distance)
             distance = l;
     }
     
-    if (poly_size > 0) {
-        Line line{poly[poly_size - 1], poly[0]};
-        Vector p{line.getSegmentNearestPoint(point)};
-        double l{(p - point).length()};
-        if(l < distance)
-            distance = l;
-    } else {
-        throw VoidPolygonException{};
-    }
+    Line line{vertex[poly_size - 1], vertex[0]};
+    Vector p{line.getSegmentNearestPoint(point)};
+    double l{(p - point).length()};
+    if(l < distance)
+        distance = l;
 
     return distance;
 }
 
 Vector Polygon::findNearestPoint(const Vector &point) const {
     Vector result;
-    double distance{DBL_MAX};
-    int poly_size{static_cast<int>(poly.size())};
+    double distance{std::numeric_limits<double>::infinity()};
+    int poly_size{static_cast<int>(vertex.size())};
+    if (poly_size < 2)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
     for(int i = 0; i < poly_size - 1; i++) {
-        Line line{poly[i], poly[i + 1]};
+        Line line{vertex[i], vertex[i + 1]};
         Vector p{line.getSegmentNearestPoint(point)};
         double l{(p - point).length()};
         if(l < distance) {
@@ -381,63 +371,93 @@ Vector Polygon::findNearestPoint(const Vector &point) const {
         }
     }
 
-    if (poly_size > 0) {
-        Line line{poly[poly_size - 1], poly[0]};
-        Vector p{line.getSegmentNearestPoint(point)};
-        double l{(p - point).length()};
-        if(l < distance) {
-            distance = l;
-            result = p;
-        }
-    } else {
-        throw VoidPolygonException{};
+    Line line{vertex[poly_size - 1], vertex[0]};
+    Vector p{line.getSegmentNearestPoint(point)};
+    double l{(p - point).length()};
+    if(l < distance) {
+        distance = l;
+        result = p;
     }
 
     return result;
 }
 
 Vector Polygon::countCenter() const {
-    return polygonCentroid(poly);
+    int n{static_cast<int>(vertex.size())};
+    if (n <= 0)
+        throw Polygon::NotEnoughPointsException{"The polygon has zero vertices"};
+
+    Vector result;
+    for (Vector v : vertex) {
+        result += v;
+    }
+    result /= n;
+
+    return result;
 }
 
 void Polygon::splitNearestEdge(const Vector &point) {
     Vector result;
     int ri{-1};
-    double distance{DBL_MAX};
-    for(int i = 0; i < (int)poly.size() - 1; i++) {
-        Line line{poly[i], poly[i + 1]};
+    double distance{std::numeric_limits<double>::infinity()};
+    int poly_size{static_cast<int>(vertex.size())};
+    if (poly_size < 2)
+        throw Polygon::NotEnoughPointsException{"The polygon has less than two vertices"};
+
+    for (int i = 0; i < poly_size - 1; i++) {
+        Line line{vertex[i], vertex[i + 1]};
         Vector p{line.getSegmentNearestPoint(point)};
         double l{(p - point).length()};
-        if(l < distance) {
+        if (l < distance) {
             distance = l;
             ri = i;
             result = p;
         }
     }
-    Line line{poly[poly.size() - 1], poly[0]};
+    Line line{vertex[poly_size - 1], vertex[0]};
     Vector p{line.getSegmentNearestPoint(point)};
     double l{(p - point).length()};
-    if(l < distance) {
+    if (l < distance) {
         distance = l;
-        ri = poly.size() - 1;
+        ri = vertex.size() - 1;
         result = p;
     }
 
-    if(ri != -1) {
-        poly.insert(poly.begin() + ri + 1, result);
+    if ((ri != -1) and (vertex[ri] != result) and (vertex[ri + 1] != result)) {
+        vertex.insert(vertex.begin() + ri + 1, result);
     }
 }
 
-int Polygon::isPointInside(const Vector &point) const {
-    return isPointInsidePoly(poly, point);
+bool Polygon::isPointInside(const Vector &point) const {
+    int pointsCount{static_cast<int>(vertex.size()) - 1};
+    if (pointsCount < 2)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
+    Line l{ Line::directedLine(point, Vector{0.0, 1e100})};
+    int result{0};
+    Vector v;
+    for(int i = 0; i < pointsCount; i++) {
+        Line line{vertex[i], vertex[i + 1]};
+        result += l.crossSegmentSegment(line, v);
+    }
+    Line line{vertex[pointsCount], vertex[0]};
+    result += l.crossSegmentSegment(line, v);
+    return result % 2 != 0;
 }
 
-int Polygon::isClockwise() const {
+bool Polygon::isClockwise() const {
+    if (vertex.size() < 2)
+        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
+
     double sum{0};
-    int t{static_cast<int>(poly.size()) - 1};
+    int t{static_cast<int>(vertex.size()) - 1};
     for(int i = 0; i < t; i++) {
-        sum += (poly[i + 1].x - poly[i].x) * (poly[i + 1].y + poly[i].y);
+        sum += (vertex[i + 1].x - vertex[i].x) * (vertex[i + 1].y + vertex[i].y);
     }
-    sum += (poly[0].x - poly[t].x) * (poly[0].y + poly[t].y);
+    sum += (vertex[0].x - vertex[t].x) * (vertex[0].y + vertex[t].y);
     return sum <= 0;
+}
+
+void Polygon::push_back(const Vector &v) {
+    vertex.push_back(v);
 }
