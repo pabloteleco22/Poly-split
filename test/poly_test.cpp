@@ -402,10 +402,13 @@ TEST(PolygonTest, SplitTrue) {
     Polygon second_poly;
     Line cut_line;
     const double expected_area{3};
+    const Line expected_cut_line{{1.5, 2}, {1.5, 2}};
 
     ASSERT_TRUE(original_poly.split(expected_area, first_poly, second_poly, cut_line));
     ASSERT_EQ(second_poly.countSquare(), expected_area);
     ASSERT_EQ(first_poly.countSquare() + second_poly.countSquare(), original_poly.countSquare());
+    ASSERT_EQ(cut_line.getDistance(expected_cut_line.getStart()), 0);
+    ASSERT_EQ(cut_line.getDistance(expected_cut_line.getEnd()), 0);
 }
 
 TEST(PolygonTest, SplitFalse) {
