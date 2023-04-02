@@ -11,13 +11,13 @@ Line::Line(const Vector &start, const Vector &end) : start(start), end(end) {
 }
 
 Line::Line(double a, double b, double c) : a{a}, b{b}, c{c} {
-    if(fabs(a) <= POLY_SPLIT_EPS && fabs(b) >= POLY_SPLIT_EPS) {
+    if (fabs(a) <= POLY_SPLIT_EPS && fabs(b) >= POLY_SPLIT_EPS) {
         start.x = -1000;
         start.y = -(c / b);
 
         end.x = 1000;
         end.y = start.y;
-    } else if(fabs(b) <= POLY_SPLIT_EPS && fabs(a) >= POLY_SPLIT_EPS) {
+    } else if (fabs(b) <= POLY_SPLIT_EPS && fabs(a) >= POLY_SPLIT_EPS) {
         start.x = -(c / a);
         start.y = -1000;
 
@@ -48,9 +48,9 @@ Vector Line::getLineNearestPoint(const Vector &point) const {
 Vector Line::getSegmentNearestPoint(const Vector &point) const {
     Vector dir{b, -a};
     double u{(point - start).dot(dir) / dir.squareLength()};
-    if(u < 0)
+    if (u < 0)
         return start;
-    else if(u > 1)
+    else if (u > 1)
         return end;
     else
         return start + dir * u;
@@ -68,7 +68,7 @@ int Line::pointSide(const Vector &point) const {
 
 bool Line::crossLineSegment(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
-    if(d == 0)
+    if (d == 0)
         return false;
 
     result.x = -det(c, b, line.c, line.b) / d;
@@ -80,7 +80,7 @@ bool Line::crossLineSegment(const Line &line, Vector &result) const {
 
 bool Line::crossSegmentSegment(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
-    if(d == 0)
+    if (d == 0)
         return false;
 
     result.x = -det(c, b, line.c, line.b) / d;
@@ -94,7 +94,7 @@ bool Line::crossSegmentSegment(const Line &line, Vector &result) const {
 
 bool Line::crossLineLine(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
-    if(d == 0)
+    if (d == 0)
         return false;
 
     result.x = -det(c, b, line.c, line.b) / d;
@@ -103,12 +103,16 @@ bool Line::crossLineLine(const Line &line, Vector &result) const {
     return true;
 }
 
+bool Line::operator==(const Line &other) const {
+    return (pointSide(other.start) == 0) and (pointSide(other.end) == 0);
+}
+
 bool Line::is_same(const Line &l1, const Line &l2) {
-    return (l1.pointSide(l2.start) == 0) and (l1.pointSide(l2.end) == 0);
+    return l1 == l2;
 }
 
 Line Line::getBisector(const Line &l1, const Line &l2) {
-    if (is_same(l1, l2)) {
+    if (l1 == l2) {
         return Line{l1};
     } else {
         double q1{sqrt(l1.a * l1.a + l1.b * l1.b)};

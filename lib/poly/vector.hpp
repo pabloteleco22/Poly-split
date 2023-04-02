@@ -74,7 +74,7 @@ struct Vector {
 
     inline Vector norm(void) const {
         double l = length();
-        if(l == 0)
+        if (l == 0)
             return Vector{};
         else
             return Vector{x / l, y / l};

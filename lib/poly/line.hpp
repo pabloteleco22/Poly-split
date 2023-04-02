@@ -110,6 +110,8 @@ class Line {
         */
         bool crossLineLine(const Line &line, Vector &result) const;
 
+        bool operator==(const Line &other) const;
+
         /**
          * @brief Returns true if l1 and l2 are the same line
         */

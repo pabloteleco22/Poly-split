@@ -407,8 +407,7 @@ TEST(PolygonTest, SplitTrue) {
     ASSERT_TRUE(original_poly.split(expected_area, first_poly, second_poly, cut_line));
     ASSERT_EQ(second_poly.countSquare(), expected_area);
     ASSERT_EQ(first_poly.countSquare() + second_poly.countSquare(), original_poly.countSquare());
-    ASSERT_EQ(cut_line.getDistance(expected_cut_line.getStart()), 0);
-    ASSERT_EQ(cut_line.getDistance(expected_cut_line.getEnd()), 0);
+    ASSERT_EQ(cut_line, expected_cut_line);
 }
 
 TEST(PolygonTest, SplitFalse) {
