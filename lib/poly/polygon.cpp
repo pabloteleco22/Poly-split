@@ -194,41 +194,6 @@ void createSubPoly(const Vectors &poly, int line1, int line2, Polygon &poly1, Po
 }
 
 
-bool isPointInsidePoly(const Vectors &poly, const Vector &point) {
-    int pointsCount{static_cast<int>(poly.size()) - 1};
-
-    Line l{ Line::directedLine(point, Vector{0.0, 1e100})};
-    int result{0};
-    Vector v;
-    for (int i = 0; i < pointsCount; i++) {
-        Line line{poly[i], poly[i + 1]};
-        result += l.crossSegmentSegment(line, v);
-    }
-    Line line{poly[pointsCount], poly[0]};
-    result += l.crossSegmentSegment(line, v);
-    return result % 2 != 0;
-}
-
-int isSegmentInsidePoly(const Vectors &poly, const Line &l, size_t excludeLine1, size_t excludeLine2) {
-    size_t pointsCount{poly.size()};
-
-    if (pointsCount < 3)
-        throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
-
-    for (size_t i = 0; i < pointsCount; i++) {
-        if (i != excludeLine1 && i != excludeLine2) {
-            Vector p1{poly[i]};
-            Vector p2{poly[i + 1 < pointsCount ? i + 1 : 0]};
-            Vector p;
-            if ((Line(p1, p2).crossSegmentSegment(l, p)) and
-                ((p1 - p).squareLength() > POLY_SPLIT_EPS) and
-                ((p2 - p).squareLength() > POLY_SPLIT_EPS)) {
-                return 0;
-            }
-        }
-    }
-    return isPointInsidePoly(poly, l.getPointAlong(0.5));
-}
 
 
 
