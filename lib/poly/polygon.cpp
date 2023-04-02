@@ -458,6 +458,7 @@ bool Polygon::isClockwise() const {
     return sum <= 0;
 }
 
+
 void Polygon::push_back(const Vector &v) {
     vertex.push_back(v);
 }
