@@ -13,7 +13,7 @@ struct Vector {
     Vector(double x = 0.0f, double y = 0.0f) : x(x), y(y) {};
 
     inline Vector operator-() const {
-        return Vector(-x, -y);
+        return Vector{-x, -y};
     }
 
     inline Vector &operator+=(const Vector &v) {
@@ -45,19 +45,19 @@ struct Vector {
     }
 
     inline Vector operator-(const Vector &v) const {
-        return Vector(x - v.x, y - v.y);
+        return Vector{x - v.x, y - v.y};
     }
 
     inline Vector operator+(const Vector &v) const {
-        return Vector(x + v.x, y + v.y);
+        return Vector{x + v.x, y + v.y};
     }
 
     inline Vector operator*(const double v) const {
-        return Vector(x * v, y * v);
+        return Vector{x * v, y * v};
     }
 
     inline Vector operator/(const double v) const {
-        return Vector(x / v, y / v);
+        return Vector{x / v, y / v};
     }
 
     inline double dot(const Vector &v) const {
@@ -75,9 +75,9 @@ struct Vector {
     inline Vector norm(void) const {
         double l = length();
         if(l == 0)
-            return Vector();
+            return Vector{};
         else
-            return Vector(x / l, y / l);
+            return Vector{x / l, y / l};
     }
 
     inline bool operator ==(const Vector &v) const {

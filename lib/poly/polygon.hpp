@@ -2,6 +2,8 @@
 #define POLYGON_H
 
 #include "line.hpp"
+#include <string>
+#include <exception>
 
 class Polygon {
 private:
@@ -12,10 +14,39 @@ public:
 
     Polygon(const Vectors &v);
 
+    class VoidPolygonException : public std::exception {
+        std::string message{"The polygon has no vertices"};
+        public:
+            VoidPolygonException();
+            VoidPolygonException(const std::string &message);
+            VoidPolygonException(const char *message);
+            const char *what() const noexcept override;
+    };
+
+    /**
+     * @brief Returns the polygon area
+    */
     double countSquare(void) const;
     double countSquare_signed(void) const;
 
-    int split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const;
+    /**
+     * @brief Split the polygon into two parts with the specified area.
+     *
+     * @param
+     * square: The area of the result poly2.
+     * @param
+     * poly1: The resulting polygon containing the area that has
+     * not been left poly2.
+     * @param
+     * poly2: The resulting polygon with the specified area.
+     * @param
+     * cutLine: The line dividing the two polygons.
+     * 
+     * @returns
+     * true: if it is possible.
+     * false: if it is not possible.
+    */
+    bool split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const;
 
     double findDistance(const Vector &point) const;
     Vector findNearestPoint(const Vector &point) const;
