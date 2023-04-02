@@ -39,13 +39,13 @@ double Line::getDistance(const Vector &point) const {
     return n / m;
 }
 
-Vector Line::getLineNearestPoint(const Vector &point) const {
+Vector Line::get_line_nearest_point(const Vector &point) const {
     Vector dir{b, -a};
     double u{(point - start).dot(dir) / dir.squareLength()};
     return start + dir * u;
 }
 
-Vector Line::getSegmentNearestPoint(const Vector &point) const {
+Vector Line::get_segment_nearest_point(const Vector &point) const {
     Vector dir{b, -a};
     double u{(point - start).dot(dir) / dir.squareLength()};
     if (u < 0)
@@ -56,7 +56,7 @@ Vector Line::getSegmentNearestPoint(const Vector &point) const {
         return start + dir * u;
 }
 
-int Line::pointSide(const Vector &point) const {
+int Line::point_side(const Vector &point) const {
     double s{a * (point.x - start.x) + b * (point.y - start.y)};
     return (s > 0 ? 1 : (s < 0 ? -1 : 0));
 }
@@ -66,7 +66,7 @@ int Line::pointSide(const Vector &point) const {
 #define minimum(a, b) (((a) > (b)) ? (b) : (a))
 #define maximum(a, b) (((a) < (b)) ? (b) : (a))
 
-bool Line::crossLineSegment(const Line &line, Vector &result) const {
+bool Line::cross_line_segment(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
     if (d == 0)
         return false;
@@ -78,7 +78,7 @@ bool Line::crossLineSegment(const Line &line, Vector &result) const {
             inside(result.y, minimum(line.start.y, line.end.y), maximum(line.start.y, line.end.y));
 }
 
-bool Line::crossSegmentSegment(const Line &line, Vector &result) const {
+bool Line::cross_segment_segment(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
     if (d == 0)
         return false;
@@ -92,7 +92,7 @@ bool Line::crossSegmentSegment(const Line &line, Vector &result) const {
            inside(result.y, minimum(line.start.y, line.end.y), maximum(line.start.y, line.end.y));
 }
 
-bool Line::crossLineLine(const Line &line, Vector &result) const {
+bool Line::cross_line_line(const Line &line, Vector &result) const {
     double d{det(a, b, line.a, line.b)};
     if (d == 0)
         return false;
@@ -104,7 +104,7 @@ bool Line::crossLineLine(const Line &line, Vector &result) const {
 }
 
 bool Line::operator==(const Line &other) const {
-    return (pointSide(other.start) == 0) and (pointSide(other.end) == 0);
+    return (point_side(other.start) == 0) and (point_side(other.end) == 0);
 }
 
 bool Line::is_same(const Line &l1, const Line &l2) {
@@ -126,7 +126,7 @@ Line Line::getBisector(const Line &l1, const Line &l2) {
     }
 }
 
-double Line::getTanAngle(const Line &l1, const Line &l2) {
+double Line::get_tan_angle(const Line &l1, const Line &l2) {
     return (l1.a * l2.b - l2.a * l1.b) / (l1.a * l2.a + l1.b * l2.b);
 }
 
@@ -134,7 +134,7 @@ Vector Line::getStart() const {
     return start;
 }
 
-Vector Line::getEnd() const {
+Vector Line::get_end() const {
     return end;
 }
 
@@ -145,7 +145,7 @@ double Line::length() const {
     return sqrt(x * x + y * y);
 }
 
-double Line::squareLength() const {
+double Line::square_length() const {
     double x{end.x - start.x};
     double y{end.y - start.y};
 
@@ -160,6 +160,6 @@ Vector Line::getPointAlong(double t) const {
     return start + (end - start).norm() * t;
 }
 
-Line Line::directedLine(const Vector &p, const Vector &d) {
+Line Line::directed_line(const Vector &p, const Vector &d) {
     return Line{p, p + d};
 }

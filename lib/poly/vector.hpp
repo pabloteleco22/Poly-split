@@ -80,11 +80,11 @@ struct Vector {
             return Vector{x / l, y / l};
     }
 
-    inline bool operator ==(const Vector &v) const {
+    inline bool operator==(const Vector &v) const {
         return x == v.x && y == v.y;
     }
 
-    inline bool operator !=(const Vector &v) const {
+    inline bool operator!=(const Vector &v) const {
         return fabs(x - v.x) >= POLY_SPLIT_EPS || fabs(y - v.y) >= POLY_SPLIT_EPS;
     }
 
@@ -92,7 +92,7 @@ struct Vector {
         return Vector{fabs(x), fabs(y)};
     }
 
-    friend std::ostream& operator<< (std::ostream &out, const Vector &v) {
+    friend std::ostream& operator<<(std::ostream &out, const Vector &v) {
         out << "(" << v.x << ", " << v.y << ")";
         return out;
     }

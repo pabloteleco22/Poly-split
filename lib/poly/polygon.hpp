@@ -9,6 +9,10 @@ class Polygon {
 private:
     Vectors vertex;
 
+    static bool get_cut(const Line &l1, const Line &l2, double s,
+                const Polygon &poly1, const Polygon &poly2,
+                Line &cut);
+
 public:
     Polygon();
 
@@ -25,8 +29,8 @@ public:
 /**
      * @brief Returns the polygon area.
     */
-    double countSquare(void) const;
-    double countSquare_signed(void) const;
+    double count_square(void) const;
+    double count_square_signed(void) const;
 
     /**
      * @brief Split the polygon into two parts with the specified area.
@@ -54,7 +58,7 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    double findDistance(const Vector &point) const;
+    double find_distance(const Vector &point) const;
 
     /**
      * @brief Returns the point of the polygon nearest to the one passed by
@@ -63,7 +67,7 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    Vector findNearestPoint(const Vector &point) const;
+    Vector find_nearest_point(const Vector &point) const;
 
     /**
      * @brief Returns the centroid of the polygon.
@@ -71,19 +75,19 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    Vector countCenter(void) const;
+    Vector count_center(void) const;
 
     /**
      * @brief Generates a new vertex in the polygon at the nearest point
      * between the passed by parameter and the edge of the polygon.
     */
-    void splitNearestEdge(const Vector &point);
+    void split_nearest_edge(const Vector &point);
 
     /**
      * @brief Returns true if the point passed by parameters is contained
      * within the edges of the polygon. 
     */
-    bool isPointInside(const Vector &point) const;
+    bool is_point_inside(const Vector &point) const;
 
     /**
      * @brief Returns true if the segment passed by parameters is contained
@@ -94,14 +98,14 @@ public:
      * @param
      * excludeLine2: The index of the second segment to be disregarded in the analysis.
     */
-    bool isSegmentInside(const Line &segment, size_t excludeLine1, size_t excludeLine2) const;
+    bool is_segment_inside(const Line &segment, size_t excludeLine1, size_t excludeLine2) const;
     
     /**
      * @brief Returns true if the vertex are in clock wise order.
     */
-    bool isClockwise(void) const;
+    bool is_clockwise(void) const;
 
-    const Vectors getVectors(void) const {
+    const Vectors get_vectors(void) const {
         return vertex;
     }
 
