@@ -9,14 +9,6 @@ add_definitions("-Wall -Wextra")
 
 add_subdirectory(lib/poly)
 
-add_executable(poly-split
-    main.cpp
-)
-
-target_link_libraries(poly-split
-    Poly
-)
-
 #------------------- TEST -------------------#
 include(FetchContent)
 FetchContent_Declare(

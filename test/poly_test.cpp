@@ -1,7 +1,62 @@
 #include <gtest/gtest.h>
+
+#include "../lib/poly/point.hpp"
 #include "../lib/poly/vector.hpp"
 #include "../lib/poly/line.hpp"
 #include "../lib/poly/polygon.hpp"
+
+/* Point Tests */
+TEST(PointTest, DefaultPoint) {
+    const Point point;
+    ASSERT_EQ(point.x, 0);
+    ASSERT_EQ(point.y, 0);
+}
+
+TEST(PointTest, CustomPoint) {
+    const double expected_x{1.3};
+    const double expected_y{3.7};
+
+    const Point point{expected_x, expected_y};
+
+    ASSERT_EQ(point.x, expected_x);
+    ASSERT_EQ(point.y, expected_y);
+}
+
+TEST(PointTest, Neg) {
+    const double expected_x{1.3};
+    const double expected_y{3.7};
+
+    const Point point{expected_x, expected_y};
+    const Point neg{-point};
+
+    ASSERT_EQ(neg.x, -expected_x);
+    ASSERT_EQ(neg.y, -expected_y);
+}
+
+TEST(PointTest, Length) {
+    const double x1{1.3};
+    const double y1{3.7};
+    const double x2{9.4};
+    const double y2{-4.0};
+    const double expected_length{11.17586686};
+
+    const Point p1{x1, y1};
+    const Point p2{x2, y2};
+
+    ASSERT_LE(p1.distance(p2) - expected_length, POLY_SPLIT_EPS);
+}
+
+TEST(PointTest, Absolute) {
+    const double x{-1.3};
+    const double y{3.7};
+    const double expected_x{-x};
+    const double expected_y{y};
+
+    const Point point{x, y};
+    const Point expected_point{expected_x, expected_y};
+
+    ASSERT_EQ(point.abs(), expected_point);
+}
 
 /* Vector Tests */
 TEST(VectorTest, DefaultVector) {
@@ -58,7 +113,7 @@ TEST(LineTest, DefaultLine) {
     const Line lin;
     const Vector expected_point{0, 0};
 
-    ASSERT_EQ(lin.getStart(), expected_point);
+    ASSERT_EQ(lin.get_start(), expected_point);
     ASSERT_EQ(lin.get_end(), expected_point);
 }
 
@@ -67,7 +122,7 @@ TEST(LineTest, CustomLine) {
     const Vector end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
-    ASSERT_EQ(lin.getStart(), start_point);
+    ASSERT_EQ(lin.get_start(), start_point);
     ASSERT_EQ(lin.get_end(), end_point);
 }
 
@@ -76,7 +131,7 @@ TEST(LineTest, reverse) {
     const Vector end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
-    ASSERT_EQ(lin.reverse().getStart(), end_point);
+    ASSERT_EQ(lin.reverse().get_start(), end_point);
     ASSERT_EQ(lin.reverse().get_end(), start_point);
 }
 
@@ -97,7 +152,7 @@ TEST(LineTest, PointAlong) {
     const Line lin{start_point, end_point};
 
     const Vector expected_point{8.48528137423857, 8.48528137423857};
-    const Vector result = lin.getPointAlong(12);
+    const Vector result = lin.get_point_along(12);
 
     ASSERT_EQ(result, expected_point);
 }
@@ -110,7 +165,7 @@ TEST(LineTest, DistanceIn) {
 
     const double expected_distance{1.414213562};
 
-    ASSERT_LE(fabs(fabs(lin.getDistance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
+    ASSERT_LE(fabs(fabs(lin.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
 
 TEST(LineTest, DistanceOut) {
@@ -121,7 +176,7 @@ TEST(LineTest, DistanceOut) {
 
     const double expected_distance{1.414213562};
 
-    ASSERT_LE(fabs(fabs(lin.getDistance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
+    ASSERT_LE(fabs(fabs(lin.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
 
 TEST(LineTest, LineNearestPointIn) {
@@ -320,11 +375,11 @@ TEST(LineTest, Bisector1) {
     const Vector expected_end_point{1, -1};
     const Line expected_bisector{expected_start_point, expected_end_point};
 
-    const Line returned = Line::getBisector(line1, line2);
+    const Line returned = Line::get_bisector(line1, line2);
     Vector inter;
 
     ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
-    ASSERT_EQ(returned.getDistance(expected_end_point), 0);
+    ASSERT_EQ(returned.get_distance(expected_end_point), 0);
 }
 
 TEST(LineTest, Bisector2) {
@@ -336,11 +391,11 @@ TEST(LineTest, Bisector2) {
     const Vector expected_end_point{end_point};
     const Line expected_bisector{expected_start_point, expected_end_point};
 
-    const Line returned = Line::getBisector(line, line);
+    const Line returned = Line::get_bisector(line, line);
     Vector inter;
 
     ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
-    ASSERT_EQ(returned.getDistance(expected_end_point), 0);
+    ASSERT_EQ(returned.get_distance(expected_end_point), 0);
 }
 
 TEST(LineTest, TanAngleZero) {

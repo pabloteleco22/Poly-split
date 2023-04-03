@@ -5,11 +5,11 @@
 #include <exception>
 
 Polygons::Polygons(const Line &l1, const Line &l2) {
-    bisector = Line::getBisector(l1, l2);
+    bisector = Line::get_bisector(l1, l2);
 
-    Vector v1{l1.getStart()};
+    Vector v1{l1.get_start()};
     Vector v2{l1.get_end()};
-    Vector v3{l2.getStart()};
+    Vector v3{l2.get_start()};
     Vector v4{l2.get_end()};
 
     p1_exist = false;
@@ -235,11 +235,11 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine
     }
 
     if (minCutLine_exists) {
-        poly1.push_back(cutLine.getStart());
+        poly1.push_back(cutLine.get_start());
         poly1.push_back(cutLine.get_end());
 
         poly2.push_back(cutLine.get_end());
-        poly2.push_back(cutLine.getStart());
+        poly2.push_back(cutLine.get_start());
 
         return true;
     } else {
@@ -374,13 +374,13 @@ bool Polygon::is_segment_inside(const Line &segment, size_t excludeLine1, size_t
             Vector p2{vertex[i + 1 < pointsCount ? i + 1 : 0]};
             Vector p;
             if ((Line(p1, p2).cross_segment_segment(segment, p)) and
-                ((p1 - p).squareLength() > POLY_SPLIT_EPS) and
-                ((p2 - p).squareLength() > POLY_SPLIT_EPS)) {
+                ((p1 - p).square_length() > POLY_SPLIT_EPS) and
+                ((p2 - p).square_length() > POLY_SPLIT_EPS)) {
                 return 0;
             }
         }
     }
-    return is_point_inside(segment.getPointAlong(0.5));
+    return is_point_inside(segment.get_point_along(0.5));
 }
 
 bool Polygon::is_clockwise() const {

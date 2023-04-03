@@ -1,5 +1,4 @@
-#ifndef LINE_H
-#define LINE_H
+#pragma once
 
 #include "vector.hpp"
 
@@ -18,7 +17,7 @@ class Line {
         /**
          * @brief It returns the start point of the segment
         */
-        Vector getStart() const;
+        Vector get_start() const;
 
         /**
          * @brief It returns the end point of the segment
@@ -45,12 +44,12 @@ class Line {
          * @brief Returns a point on the line one distance t away from
          * the start point
         */
-        Vector getPointAlong(double t) const;
+        Vector get_point_along(double t) const;
 
         /**
          * @brief Returns the distance between the point and the line
         */
-        double getDistance(const Vector &point) const;
+        double get_distance(const Vector &point) const;
 
         /**
          * @brief Returns the nearest point from the line
@@ -120,7 +119,7 @@ class Line {
         /**
          * @brief Returns the bisector between the two lines
         */
-        static Line getBisector(const Line &l1, const Line &l2);
+        static Line get_bisector(const Line &l1, const Line &l2);
 
         /**
          * @brief Returns the tangent of the angle between the two lines in radians
@@ -142,5 +141,3 @@ class Line {
             return out;
         }
 };
-
-#endif // LINE_H

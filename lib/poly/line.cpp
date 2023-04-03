@@ -32,7 +32,7 @@ Line::Line(double a, double b, double c) : a{a}, b{b}, c{c} {
     }
 }
 
-double Line::getDistance(const Vector &point) const {
+double Line::get_distance(const Vector &point) const {
     double n{a * point.x + b * point.y + c};
     double m{sqrt(a * a + b * b)};
     assert(m != 0);
@@ -41,13 +41,13 @@ double Line::getDistance(const Vector &point) const {
 
 Vector Line::get_line_nearest_point(const Vector &point) const {
     Vector dir{b, -a};
-    double u{(point - start).dot(dir) / dir.squareLength()};
+    double u{(point - start).dot(dir) / dir.square_length()};
     return start + dir * u;
 }
 
 Vector Line::get_segment_nearest_point(const Vector &point) const {
     Vector dir{b, -a};
-    double u{(point - start).dot(dir) / dir.squareLength()};
+    double u{(point - start).dot(dir) / dir.square_length()};
     if (u < 0)
         return start;
     else if (u > 1)
@@ -111,7 +111,7 @@ bool Line::is_same(const Line &l1, const Line &l2) {
     return l1 == l2;
 }
 
-Line Line::getBisector(const Line &l1, const Line &l2) {
+Line Line::get_bisector(const Line &l1, const Line &l2) {
     if (l1 == l2) {
         return Line{l1};
     } else {
@@ -130,7 +130,7 @@ double Line::get_tan_angle(const Line &l1, const Line &l2) {
     return (l1.a * l2.b - l2.a * l1.b) / (l1.a * l2.a + l1.b * l2.b);
 }
 
-Vector Line::getStart() const {
+Vector Line::get_start() const {
     return start;
 }
 
@@ -156,7 +156,7 @@ Line Line::reverse() const {
     return Line{end, start};
 }
 
-Vector Line::getPointAlong(double t) const {
+Vector Line::get_point_along(double t) const {
     return start + (end - start).norm() * t;
 }
 
