@@ -1,5 +1,4 @@
-#ifndef POLYGON_H
-#define POLYGON_H
+#pragma once
 
 #include "line.hpp"
 #include <string>
@@ -150,4 +149,23 @@ public:
     }
 };
 
-#endif // POLYGON_H
+struct Polygons {
+    Polygons(const Line &l1, const Line &l2);
+    bool find_cut_line(double square, Line &cut_line);
+
+    Line bisector;
+
+    Polygon leftTriangle;
+    Polygon trapezoid;
+    Polygon rightTriangle;
+
+    bool p1_exist;
+    bool p2_exist;
+    bool p3_exist;
+    bool p4_exist;
+
+    double leftTriangleSquare;
+    double trapezoidSquare;
+    double rightTriangleSquare;
+    double totalSquare;
+};

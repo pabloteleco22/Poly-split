@@ -4,162 +4,137 @@
 #include <algorithm>
 #include <exception>
 
-struct Polygons {
-    Line bisector;
-
-    Polygon leftTriangle;
-    Polygon trapezoid;
-    Polygon rightTriangle;
-
-    int p1_exist;
-    int p2_exist;
-    int p3_exist;
-    int p4_exist;
-
-    double leftTriangleSquare;
-    double trapezoidSquare;
-    double rightTriangleSquare;
-    double totalSquare;
-};
-
-void createPolygons(const Line &l1, const Line &l2, Polygons &res) {
-    res.bisector = Line::getBisector(l1, l2);
+Polygons::Polygons(const Line &l1, const Line &l2) {
+    bisector = Line::getBisector(l1, l2);
 
     Vector v1{l1.getStart()};
     Vector v2{l1.get_end()};
     Vector v3{l2.getStart()};
     Vector v4{l2.get_end()};
 
-    res.p1_exist = 0;
-    res.p4_exist = 0;
+    p1_exist = false;
+    p4_exist = false;
     if (v1 != v4) {
-        Line l1s{v1, res.bisector.get_line_nearest_point(v1)};
+        Line l1s{v1, bisector.get_line_nearest_point(v1)};
         Vector p1;
-        res.p1_exist = l1s.cross_line_segment(l2, p1) && p1 != v4;
-        if (res.p1_exist) {
-            res.leftTriangle.push_back(v1);
-            res.leftTriangle.push_back(v4);
-            res.leftTriangle.push_back(p1);
+        p1_exist = l1s.cross_line_segment(l2, p1) && p1 != v4;
+        if (p1_exist) {
+            leftTriangle.push_back(v1);
+            leftTriangle.push_back(v4);
+            leftTriangle.push_back(p1);
 
-            res.trapezoid.push_back(p1);
+            trapezoid.push_back(p1);
         } else {
-            res.trapezoid.push_back(v4);
+            trapezoid.push_back(v4);
         }
 
-        Line l2e{v4, res.bisector.get_line_nearest_point(v4)};
+        Line l2e{v4, bisector.get_line_nearest_point(v4)};
         Vector p4;
-        res.p4_exist = l2e.cross_line_segment(l1, p4) && p4 != v1;
-        if (res.p4_exist) {
-            res.leftTriangle.push_back(v4);
-            res.leftTriangle.push_back(v1);
-            res.leftTriangle.push_back(p4);
+        p4_exist = l2e.cross_line_segment(l1, p4) && p4 != v1;
+        if (p4_exist) {
+            leftTriangle.push_back(v4);
+            leftTriangle.push_back(v1);
+            leftTriangle.push_back(p4);
 
-            res.trapezoid.push_back(p4);
+            trapezoid.push_back(p4);
         } else {
-            res.trapezoid.push_back(v1);
+            trapezoid.push_back(v1);
         }
     } else {
-        res.trapezoid.push_back(v4);
-        res.trapezoid.push_back(v1);
+        trapezoid.push_back(v4);
+        trapezoid.push_back(v1);
     }
 
-    res.p2_exist = 0;
-    res.p3_exist = 0;
+    p2_exist = false;
+    p3_exist = false;
     if (v2 != v3) {
-        Line l2s{v3, res.bisector.get_line_nearest_point(v3)};
+        Line l2s{v3, bisector.get_line_nearest_point(v3)};
         Vector p3;
-        res.p3_exist = l2s.cross_line_segment(l1, p3) && p3 != v2;
-        if (res.p3_exist) {
-            res.rightTriangle.push_back(v3);
-            res.rightTriangle.push_back(v2);
-            res.rightTriangle.push_back(p3);
+        p3_exist = l2s.cross_line_segment(l1, p3) && p3 != v2;
+        if (p3_exist) {
+            rightTriangle.push_back(v3);
+            rightTriangle.push_back(v2);
+            rightTriangle.push_back(p3);
 
-            res.trapezoid.push_back(p3);
+            trapezoid.push_back(p3);
         } else {
-            res.trapezoid.push_back(v2);
+            trapezoid.push_back(v2);
         }
 
-        Line l1e{v2, res.bisector.get_line_nearest_point(v2)};
+        Line l1e{v2, bisector.get_line_nearest_point(v2)};
         Vector p2;
-        res.p2_exist = l1e.cross_line_segment(l2, p2) && p2 != v3;
-        if (res.p2_exist) {
-            res.rightTriangle.push_back(v2);
-            res.rightTriangle.push_back(v3);
-            res.rightTriangle.push_back(p2);
+        p2_exist = l1e.cross_line_segment(l2, p2) && p2 != v3;
+        if (p2_exist) {
+            rightTriangle.push_back(v2);
+            rightTriangle.push_back(v3);
+            rightTriangle.push_back(p2);
 
-            res.trapezoid.push_back(p2);
+            trapezoid.push_back(p2);
         } else {
-            res.trapezoid.push_back(v3);
+            trapezoid.push_back(v3);
         }
     } else {
-        res.trapezoid.push_back(v2);
-        res.trapezoid.push_back(v3);
+        trapezoid.push_back(v2);
+        trapezoid.push_back(v3);
     }
 
-    res.leftTriangleSquare = res.leftTriangle.count_square();
-    res.trapezoidSquare = res.trapezoid.count_square();
-    res.rightTriangleSquare = res.rightTriangle.count_square();
+    leftTriangleSquare = leftTriangle.count_square();
+    trapezoidSquare = trapezoid.count_square();
+    rightTriangleSquare = rightTriangle.count_square();
 
-    res.totalSquare = res.leftTriangleSquare + res.trapezoidSquare + res.rightTriangleSquare;
+    totalSquare = leftTriangleSquare + trapezoidSquare + rightTriangleSquare;
 }
 
-int findCutLine(double square, Polygons &res, Line &cutLine) {
-    if (square > res.totalSquare) {
-        return 0;
+bool Polygons::find_cut_line(double square, Line &cut_line) {
+    if (square > totalSquare) {
+        return false;
     }
 
-    if (!res.leftTriangle.empty() && square < res.leftTriangleSquare) {
-        double m{square / res.leftTriangleSquare};
-        Vector p{res.leftTriangle[1] + (res.leftTriangle[2] - res.leftTriangle[1]) * m};
-        if (res.p1_exist) {
-            cutLine = Line{p, res.leftTriangle[0]};
-            return 1;
-        } else if(res.p4_exist) {
-            cutLine = Line{res.leftTriangle[0], p};
-            return 1;
+    if (!leftTriangle.empty() && square < leftTriangleSquare) {
+        double m{square / leftTriangleSquare};
+        Vector p{leftTriangle[1] + (leftTriangle[2] - leftTriangle[1]) * m};
+        if (p1_exist) {
+            cut_line = Line{p, leftTriangle[0]};
+            return true;
+        } else if(p4_exist) {
+            cut_line = Line{leftTriangle[0], p};
+            return true;
         }
-    } else if(res.leftTriangleSquare < square && square < (res.leftTriangleSquare + res.trapezoidSquare)) {
-        Line t{res.trapezoid[0], res.trapezoid[3]};
-        double tgA{Line::get_tan_angle(t, res.bisector)};
-        double S{square - res.leftTriangleSquare};
+    } else if(leftTriangleSquare < square && square < (leftTriangleSquare + trapezoidSquare)) {
+        Line t{trapezoid[0], trapezoid[3]};
+        double tgA{Line::get_tan_angle(t, bisector)};
+        double S{square - leftTriangleSquare};
         double m;
         if (fabs(tgA) > POLY_SPLIT_EPS) {
-            double a{Line(res.trapezoid[0], res.trapezoid[1]).length()};
-            double b{Line(res.trapezoid[2], res.trapezoid[3]).length()};
-            double hh{2.0 * res.trapezoidSquare / (a + b)};
+            double a{Line(trapezoid[0], trapezoid[1]).length()};
+            double b{Line(trapezoid[2], trapezoid[3]).length()};
+            double hh{2.0 * trapezoidSquare / (a + b)};
             double d{a * a - 4.0 * tgA * S};
             double h{-(-a + sqrt(d)) / (2.0 * tgA)};
             m = h / hh;
         } else {
-            m = S / res.trapezoidSquare;
+            m = S / trapezoidSquare;
         }
-        Vector p{res.trapezoid[0] + (res.trapezoid[3] - res.trapezoid[0]) * m};
-        Vector pp{res.trapezoid[1] + (res.trapezoid[2] - res.trapezoid[1]) * m};
+        Vector p{trapezoid[0] + (trapezoid[3] - trapezoid[0]) * m};
+        Vector pp{trapezoid[1] + (trapezoid[2] - trapezoid[1]) * m};
 
-        cutLine = Line{p, pp};
-        return 1;
-    } else if(!res.rightTriangle.empty() && square > res.leftTriangleSquare + res.trapezoidSquare) {
-        double S{square - res.leftTriangleSquare - res.trapezoidSquare};
-        double m{S / res.rightTriangleSquare};
-        Vector p{res.rightTriangle[2] + (res.rightTriangle[1] - res.rightTriangle[2]) * m};
-        if (res.p3_exist) {
-            cutLine = Line{res.rightTriangle[0], p};
-            return 1;
-        } else if (res.p2_exist) {
-            cutLine = Line{p, res.rightTriangle[0]};
-            return 1;
+        cut_line = Line{p, pp};
+        return true;
+    } else if(!rightTriangle.empty() && square > leftTriangleSquare + trapezoidSquare) {
+        double S{square - leftTriangleSquare - trapezoidSquare};
+        double m{S / rightTriangleSquare};
+        Vector p{rightTriangle[2] + (rightTriangle[1] - rightTriangle[2]) * m};
+        if (p3_exist) {
+            cut_line = Line{rightTriangle[0], p};
+            return true;
+        } else if (p2_exist) {
+            cut_line = Line{p, rightTriangle[0]};
+            return true;
         }
     }
 
-    return 0;
+    return false;
 }
-
-
-
-
-
-
-
 
 Polygon::NotEnoughPointsException::NotEnoughPointsException() {}
 
@@ -431,16 +406,14 @@ bool Polygon::get_cut(const Line &l1, const Line &l2, double s,
     bool success{false};
 
     if (sn1 > 0) {
-        Polygons res;
-        createPolygons(l1, l2, res);
+        Polygons res{l1, l2};
 
-        if (findCutLine(sn1, res, cut))
+        if (res.find_cut_line(sn1, cut))
             success = true;
     } else if (sn2 > 0) {
-        Polygons res;
-        createPolygons(l2, l1, res);
+        Polygons res{l2, l1};
 
-        if (findCutLine(sn2, res, cut)) {
+        if (res.find_cut_line(sn2, cut)) {
             cut = cut.reverse();
             success = true;
         }
