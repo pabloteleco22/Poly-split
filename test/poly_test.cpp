@@ -111,15 +111,15 @@ TEST(VectorTest, Absolute) {
 /* Line Tests */
 TEST(LineTest, DefaultLine) {
     const Line lin;
-    const Vector expected_point{0, 0};
+    const Point expected_point{0, 0};
 
     ASSERT_EQ(lin.get_start(), expected_point);
     ASSERT_EQ(lin.get_end(), expected_point);
 }
 
 TEST(LineTest, CustomLine) {
-    const Vector start_point{5, 8};
-    const Vector end_point{8.9, 3};
+    const Point start_point{5, 8};
+    const Point end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
     ASSERT_EQ(lin.get_start(), start_point);
@@ -127,8 +127,8 @@ TEST(LineTest, CustomLine) {
 }
 
 TEST(LineTest, reverse) {
-    const Vector start_point{5, 8};
-    const Vector end_point{8.9, 3};
+    const Point start_point{5, 8};
+    const Point end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
     ASSERT_EQ(lin.reverse().get_start(), end_point);
@@ -136,31 +136,30 @@ TEST(LineTest, reverse) {
 }
 
 TEST(LineTest, Length) {
-    const Vector start_point{5, 8};
-    const Vector end_point{8, 3};
+    const Point start_point{5, 8};
+    const Point end_point{8, 3};
     const Line lin{start_point, end_point};
-    const Vector distance_vector{end_point - start_point};
 
-    const double expected_distance{distance_vector.length()};
+    const double expected_distance{end_point.distance(start_point)};
 
     ASSERT_EQ(lin.length(), expected_distance);
 }
 
 TEST(LineTest, PointAlong) {
-    const Vector start_point;
-    const Vector end_point{25, 25};
+    const Point start_point;
+    const Point end_point{25, 25};
     const Line lin{start_point, end_point};
 
-    const Vector expected_point{8.48528137423857, 8.48528137423857};
-    const Vector result = lin.get_point_along(12);
+    const Point expected_point{8.48528137423857, 8.48528137423857};
+    const Point result = lin.get_point_along(12);
 
     ASSERT_EQ(result, expected_point);
 }
 
 TEST(LineTest, DistanceIn) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{2, 4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
 
     const double expected_distance{1.414213562};
@@ -169,9 +168,9 @@ TEST(LineTest, DistanceIn) {
 }
 
 TEST(LineTest, DistanceOut) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{-2, -4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
 
     const double expected_distance{1.414213562};
@@ -180,49 +179,49 @@ TEST(LineTest, DistanceOut) {
 }
 
 TEST(LineTest, LineNearestPointIn) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{2, 4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
-    const Vector expected_point{3, 3};
+    const Point expected_point{3, 3};
 
     ASSERT_EQ(lin.get_line_nearest_point(distance_point), expected_point);
 }
 
 TEST(LineTest, LineNearestPointOut) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{-2, -4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
-    const Vector expected_point{-3, -3};
+    const Point expected_point{-3, -3};
 
     ASSERT_EQ(lin.get_line_nearest_point(distance_point), expected_point);
 }
 
 TEST(LineTest, SegmentNearestPoint) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{2, 4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
-    const Vector expected_point{3, 3};
+    const Point expected_point{3, 3};
 
     ASSERT_EQ(lin.get_segment_nearest_point(distance_point), expected_point);
 }
 
 TEST(LineTest, SegmentNearestPointOut) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{-2, -4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
-    const Vector expected_point{0, 0};
+    const Point expected_point{0, 0};
 
     ASSERT_EQ(lin.get_segment_nearest_point(distance_point), expected_point);
 }
 
 TEST(LineTest, PointSideAbove) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{2, 4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
     const int expected_result{1};
 
@@ -230,9 +229,9 @@ TEST(LineTest, PointSideAbove) {
 }
 
 TEST(LineTest, PointSideBelow) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{-2, -4};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
     const int expected_result{-1};
 
@@ -240,9 +239,9 @@ TEST(LineTest, PointSideBelow) {
 }
 
 TEST(LineTest, PointSideInside) {
-    const Vector start_point;
-    const Vector end_point{10, 10};
-    const Vector distance_point{-1, -1};
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-1, -1};
     const Line lin{start_point, end_point};
     const int expected_result{0};
 
@@ -250,12 +249,12 @@ TEST(LineTest, PointSideInside) {
 }
 
 TEST(LineTest, CrossLineLineTrue) {
-    const Vector start_point1;
-    const Vector end_point1{4, 4};
-    const Vector start_point2{0, 4};
-    const Vector end_point2{6, 0};
-    Vector inter_point;
-    const Vector expected_inter_point{2.4, 2.4};
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
     const Line lin1{start_point1, end_point1};
     const Line lin2{start_point2, end_point2};
 
@@ -264,11 +263,11 @@ TEST(LineTest, CrossLineLineTrue) {
 }
 
 TEST(LineTest, CrossLineLineFalse) {
-    const Vector start_point1;
-    const Vector end_point1{4, 4};
-    const Vector start_point2{0, 4};
-    const Vector end_point2{-4, 0};
-    Vector inter_point;
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{-4, 0};
+    Point inter_point;
     const Line lin1{start_point1, end_point1};
     const Line lin2{start_point2, end_point2};
 
@@ -276,12 +275,12 @@ TEST(LineTest, CrossLineLineFalse) {
 }
 
 TEST(LineTest, CrossLineSegmentTrue) {
-    const Vector line_start_point;
-    const Vector line_end_point{4, 4};
-    const Vector segment_start_point{0, 4};
-    const Vector segment_end_point{6, 0};
-    Vector inter_point;
-    const Vector expected_inter_point{2.4, 2.4};
+    const Point line_start_point;
+    const Point line_end_point{4, 4};
+    const Point segment_start_point{0, 4};
+    const Point segment_end_point{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
     const Line line{line_start_point, line_end_point};
     const Line segment{segment_start_point, segment_end_point};
 
@@ -290,11 +289,11 @@ TEST(LineTest, CrossLineSegmentTrue) {
 }
 
 TEST(LineTest, CrossLineSegmentFalse) {
-    const Vector line_start_point;
-    const Vector line_end_point{4, 4};
-    const Vector segment_start_point{0, 6};
-    const Vector segment_end_point{18, 0};
-    Vector inter_point;
+    const Point line_start_point;
+    const Point line_end_point{4, 4};
+    const Point segment_start_point{0, 6};
+    const Point segment_end_point{18, 0};
+    Point inter_point;
     const Line line{line_start_point, line_end_point};
     const Line segment{segment_start_point, segment_end_point};
 
@@ -302,12 +301,12 @@ TEST(LineTest, CrossLineSegmentFalse) {
 }
 
 TEST(LineTest, CrossSegmentSegmentTrue) {
-    const Vector start_point1;
-    const Vector end_point1{4, 4};
-    const Vector start_point2{0, 4};
-    const Vector end_point2{6, 0};
-    Vector inter_point;
-    const Vector expected_inter_point{2.4, 2.4};
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
     const Line segment1{start_point1, end_point1};
     const Line segment2{start_point2, end_point2};
 
@@ -316,12 +315,12 @@ TEST(LineTest, CrossSegmentSegmentTrue) {
 }
 
 TEST(LineTest, CrossSegmentSegmentFalse1) {
-    const Vector start_point1;
-    const Vector end_point1{4, 4};
-    const Vector start_point2{0, 6};
-    const Vector end_point2{18, 0};
-    Vector inter_point;
-    const Vector expected_inter_point{2.4, 2.4};
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 6};
+    const Point end_point2{18, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
     const Line segment1{start_point1, end_point1};
     const Line segment2{start_point2, end_point2};
 
@@ -329,12 +328,12 @@ TEST(LineTest, CrossSegmentSegmentFalse1) {
 }
 
 TEST(LineTest, CrossSegmentSegmentFalse2) {
-    const Vector start_point1{0, 6};
-    const Vector end_point1{18, 0};
-    const Vector start_point2;
-    const Vector end_point2{4, 4};
-    Vector inter_point;
-    const Vector expected_inter_point{2.4, 2.4};
+    const Point start_point1{0, 6};
+    const Point end_point1{18, 0};
+    const Point start_point2;
+    const Point end_point2{4, 4};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
     const Line segment1{start_point1, end_point1};
     const Line segment2{start_point2, end_point2};
 
@@ -342,10 +341,10 @@ TEST(LineTest, CrossSegmentSegmentFalse2) {
 }
 
 TEST(LineTest, IsSameTrue) {
-    const Vector start_point1;
-    const Vector end_point1{2, 4};
-    const Vector start_point2;
-    const Vector end_point2{4, 8};
+    const Point start_point1;
+    const Point end_point1{2, 4};
+    const Point start_point2;
+    const Point end_point2{4, 8};
     const Line line1{start_point1, end_point1};
     const Line line2{start_point2, end_point2};
 
@@ -353,10 +352,10 @@ TEST(LineTest, IsSameTrue) {
 }
 
 TEST(LineTest, IsSameFalse) {
-    const Vector start_point1;
-    const Vector end_point1{2, 4};
-    const Vector start_point2;
-    const Vector end_point2{4, 8.1};
+    const Point start_point1;
+    const Point end_point1{2, 4};
+    const Point start_point2;
+    const Point end_point2{4, 8.1};
     const Line line1{start_point1, end_point1};
     const Line line2{start_point2, end_point2};
 
@@ -364,43 +363,43 @@ TEST(LineTest, IsSameFalse) {
 }
 
 TEST(LineTest, Bisector1) {
-    const Vector start_point1;
-    const Vector end_point1{0, 1};
-    const Vector start_point2;
-    const Vector end_point2{1, 0};
+    const Point start_point1;
+    const Point end_point1{0, 1};
+    const Point start_point2;
+    const Point end_point2{1, 0};
     const Line line1{start_point1, end_point1};
     const Line line2{start_point2, end_point2};
 
-    const Vector expected_start_point;
-    const Vector expected_end_point{1, -1};
+    const Point expected_start_point;
+    const Point expected_end_point{1, -1};
     const Line expected_bisector{expected_start_point, expected_end_point};
 
     const Line returned = Line::get_bisector(line1, line2);
-    Vector inter;
+    Point inter;
 
     ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
     ASSERT_EQ(returned.get_distance(expected_end_point), 0);
 }
 
 TEST(LineTest, Bisector2) {
-    const Vector start_point;
-    const Vector end_point{0, 1};
+    const Point start_point;
+    const Point end_point{0, 1};
     const Line line{start_point, end_point};
 
-    const Vector expected_start_point;
-    const Vector expected_end_point{end_point};
+    const Point expected_start_point;
+    const Point expected_end_point{end_point};
     const Line expected_bisector{expected_start_point, expected_end_point};
 
     const Line returned = Line::get_bisector(line, line);
-    Vector inter;
+    Point inter;
 
     ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
     ASSERT_EQ(returned.get_distance(expected_end_point), 0);
 }
 
 TEST(LineTest, TanAngleZero) {
-    const Vector start_point;
-    const Vector end_point{0, 1};
+    const Point start_point;
+    const Point end_point{0, 1};
     const Line line{start_point, end_point};
 
     const double expected_tan{0};
@@ -409,10 +408,10 @@ TEST(LineTest, TanAngleZero) {
 }
 
 TEST(LineTest, TanAngle1) {
-    const Vector start_point1;
-    const Vector end_point1{0, 1};
-    const Vector start_point2;
-    const Vector end_point2{1, 1};
+    const Point start_point1;
+    const Point end_point1{0, 1};
+    const Point start_point2;
+    const Point end_point2{1, 1};
     const Line line1{start_point1, end_point1};
     const Line line2{start_point2, end_point2};
 
@@ -422,11 +421,11 @@ TEST(LineTest, TanAngle1) {
 }
 
 TEST(LineTest, DirectedLine) {
-    const Vector point{1, 2};
-    const Vector vector{1, 1};
+    const Point point{1, 2};
+    const Point vector{1, 1};
     const Line result_line = Line::directed_line(point, vector);
-    const Vector expected_start_point{1, 2};
-    const Vector expected_end_point{4.5, 5.5};
+    const Point expected_start_point{1, 2};
+    const Point expected_end_point{4.5, 5.5};
     const Line expected_line{expected_start_point, expected_end_point};
 
     ASSERT_TRUE(Line::is_same(result_line, expected_line));
@@ -434,11 +433,11 @@ TEST(LineTest, DirectedLine) {
 
 /* Polygon Tests */
 TEST(PolygonTest, CountSquare) {
-    Vectors pol_points;
-    pol_points.push_back(Vector{});
-    pol_points.push_back(Vector{2, 0});
-    pol_points.push_back(Vector{2, 2});
-    pol_points.push_back(Vector{0, 2});
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
     const Polygon pol{pol_points};
 
     const double expected_sqrt{4};
@@ -447,11 +446,11 @@ TEST(PolygonTest, CountSquare) {
 }
 
 TEST(PolygonTest, SplitTrue) {
-    Vectors original_points;
-    original_points.push_back(Vector{});
-    original_points.push_back(Vector{2, 0});
-    original_points.push_back(Vector{2, 2});
-    original_points.push_back(Vector{0, 2});
+    Points original_points;
+    original_points.push_back(Point{});
+    original_points.push_back(Point{2, 0});
+    original_points.push_back(Point{2, 2});
+    original_points.push_back(Point{0, 2});
     const Polygon original_poly{original_points};
     Polygon first_poly;
     Polygon second_poly;
@@ -466,11 +465,11 @@ TEST(PolygonTest, SplitTrue) {
 }
 
 TEST(PolygonTest, SplitFalse) {
-    Vectors original_points;
-    original_points.push_back(Vector{});
-    original_points.push_back(Vector{2, 0});
-    original_points.push_back(Vector{2, 2});
-    original_points.push_back(Vector{0, 2});
+    Points original_points;
+    original_points.push_back(Point{});
+    original_points.push_back(Point{2, 0});
+    original_points.push_back(Point{2, 2});
+    original_points.push_back(Point{0, 2});
     const Polygon original_poly{original_points};
     Polygon first_poly;
     Polygon second_poly;
@@ -481,111 +480,111 @@ TEST(PolygonTest, SplitFalse) {
 }
 
 TEST(PolygonTest, FindDistanceOutside) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     const Polygon poly{points};
 
-    const Vector point{2, 3};
+    const Point point{2, 3};
     const double expected_distance{1};
 
     ASSERT_EQ(poly.find_distance(point), expected_distance);
 }
 
 TEST(PolygonTest, FindDistanceInside) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     const Polygon poly{points};
 
-    const Vector point{1, 1};
+    const Point point{1, 1};
     const double expected_distance{1};
 
     ASSERT_EQ(poly.find_distance(point), expected_distance);
 }
 
 TEST(PolygonTest, FindEmptyDistance) {
-    Vectors points;
+    Points points;
     const Polygon poly{points};
 
-    const Vector point{2, 3};
+    const Point point{2, 3};
 
     ASSERT_THROW(poly.find_distance(point), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, FindNearestPointOutside) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     const Polygon poly{points};
 
-    const Vector point{3, 3};
-    const Vector expected_point{2, 2};
+    const Point point{3, 3};
+    const Point expected_point{2, 2};
 
     ASSERT_EQ(poly.find_nearest_point(point), expected_point);
 }
 
 TEST(PolygonTest, FindNearestPointInside) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     const Polygon poly{points};
 
-    const Vector point{1, 1.1};
-    const Vector expected_point{1, 2};
+    const Point point{1, 1.1};
+    const Point expected_point{1, 2};
 
     ASSERT_EQ(poly.find_nearest_point(point), expected_point);
 }
 
 TEST(PolygonTest, FindEmptyNearestPoint) {
-    Vectors points;
+    Points points;
     const Polygon poly{points};
 
-    const Vector point{3, 3};
+    const Point point{3, 3};
 
     ASSERT_THROW(poly.find_nearest_point(point), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, FindCenter) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     const Polygon poly{points};
 
-    const Vector expected_point{1, 1};
+    const Point expected_point{1, 1};
 
     ASSERT_EQ(poly.count_center(), expected_point);
 }
 
 TEST(PolygonTest, FindCenterEmpty) {
-    Vectors points;
+    Points points;
     const Polygon poly{points};
 
-    const Vector expected_point{};
+    const Point expected_point{};
 
     ASSERT_THROW(poly.count_center(), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, SplitNearestEdge) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     Polygon poly{points};
 
-    const Vector split_point{4, 1};
-    const Vector expected_point{2, 1};
+    const Point split_point{4, 1};
+    const Point expected_point{2, 1};
     const size_t expected_size{5};
 
     poly.split_nearest_edge(split_point);
@@ -595,14 +594,14 @@ TEST(PolygonTest, SplitNearestEdge) {
 }
 
 TEST(PolygonTest, SplitNearestEdgeCorner) {
-    Vectors points;
-    points.push_back(Vector{});
-    points.push_back(Vector{2, 0});
-    points.push_back(Vector{2, 2});
-    points.push_back(Vector{0, 2});
+    Points points;
+    points.push_back(Point{});
+    points.push_back(Point{2, 0});
+    points.push_back(Point{2, 2});
+    points.push_back(Point{0, 2});
     Polygon poly{points};
 
-    const Vector split_point{4, 4};
+    const Point split_point{4, 4};
     const size_t expected_size{4};
 
     poly.split_nearest_edge(split_point);
@@ -611,64 +610,64 @@ TEST(PolygonTest, SplitNearestEdgeCorner) {
 }
 
 TEST(PolygonTest, IsPointInsideTrue) {
-    Vectors pol_points;
-    pol_points.push_back(Vector{});
-    pol_points.push_back(Vector{2, 0});
-    pol_points.push_back(Vector{2, 2});
-    pol_points.push_back(Vector{0, 2});
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
     const Polygon pol{pol_points};
 
-    const Vector point{1, 1};
+    const Point point{1, 1};
 
     ASSERT_TRUE(pol.is_point_inside(point));
 }
 
 TEST(PolygonTest, IsPointInsideFalse) {
-    Vectors pol_points;
-    pol_points.push_back(Vector{});
-    pol_points.push_back(Vector{2, 0});
-    pol_points.push_back(Vector{2, 2});
-    pol_points.push_back(Vector{0, 2});
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
     const Polygon pol{pol_points};
 
-    const Vector point{-1, 1};
+    const Point point{-1, 1};
 
     ASSERT_FALSE(pol.is_point_inside(point));
 }
 
 TEST(PolygonTest, IsPointInsideException) {
-    Vectors pol_points;
+    Points pol_points;
     const Polygon pol{pol_points};
 
-    const Vector point{-1, 1};
+    const Point point{-1, 1};
 
     ASSERT_THROW(pol.is_point_inside(point), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, IsClockWiseTrue) {
-    Vectors pol_points;
-    pol_points.push_back(Vector{});
-    pol_points.push_back(Vector{2, 0});
-    pol_points.push_back(Vector{2, 2});
-    pol_points.push_back(Vector{0, 2});
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
     const Polygon pol{pol_points};
 
     ASSERT_TRUE(pol.is_clockwise());
 }
 
 TEST(PolygonTest, IsClockWiseFalse) {
-    Vectors pol_points;
-    pol_points.push_back(Vector{0, 2});
-    pol_points.push_back(Vector{2, 2});
-    pol_points.push_back(Vector{2, 0});
-    pol_points.push_back(Vector{});
+    Points pol_points;
+    pol_points.push_back(Point{0, 2});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{});
     const Polygon pol{pol_points};
 
     ASSERT_FALSE(pol.is_clockwise());
 }
 
 TEST(PolygonTest, IsClockWiseException) {
-    Vectors pol_points;
+    Points pol_points;
     const Polygon pol{pol_points};
 
     ASSERT_THROW(pol.is_clockwise(), Polygon::NotEnoughPointsException);

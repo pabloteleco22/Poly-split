@@ -7,22 +7,22 @@ class Line {
         double a{0}; // -Increase of y
         double b{0}; // Increase of x
         double c{0}; // Determinant of the segment
-        Vector start, end;
+        Point start, end;
 
     public:
         Line();
-        Line(const Vector &start, const Vector &end);
+        Line(const Point &start, const Point &end);
         Line(double a, double b, double c);
 
         /**
          * @brief It returns the start point of the segment
         */
-        Vector get_start() const;
+        Point get_start() const;
 
         /**
          * @brief It returns the end point of the segment
         */
-        Vector get_end() const;
+        Point get_end() const;
 
         /**
          * @brief It returns the length of the segment
@@ -44,24 +44,24 @@ class Line {
          * @brief Returns a point on the line one distance t away from
          * the start point
         */
-        Vector get_point_along(double t) const;
+        Point get_point_along(double t) const;
 
         /**
          * @brief Returns the distance between the point and the line
         */
-        double get_distance(const Vector &point) const;
+        double get_distance(const Point &point) const;
 
         /**
          * @brief Returns the nearest point from the line
         */
-        Vector get_line_nearest_point(const Vector &point) const;
+        Point get_line_nearest_point(const Point &point) const;
 
         /**
          * @brief Returns the nearest point from the segment,
          * which means that it takes into account the start
          * and end points
         */
-        Vector get_segment_nearest_point(const Vector &point) const;
+        Point get_segment_nearest_point(const Point &point) const;
 
         /**
          * @brief Returns if the point is over, under or in the line
@@ -71,7 +71,7 @@ class Line {
          *  0 if in,
          *  -1 if below
         */
-        int point_side(const Vector &point) const;
+        int point_side(const Point &point) const;
 
         /**
          * @brief Returns whether the line and the segment intersect and
@@ -85,7 +85,7 @@ class Line {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_line_segment(const Line &line, Vector &result) const;
+        bool cross_line_segment(const Line &line, Point &result) const;
 
         /**
          * @brief Returns whether the thw segments intersect and
@@ -96,7 +96,7 @@ class Line {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_segment_segment(const Line &line, Vector &result) const;
+        bool cross_segment_segment(const Line &line, Point &result) const;
 
         /**
          * @brief Returns whether the two lines intersect and
@@ -107,7 +107,7 @@ class Line {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_line_line(const Line &line, Vector &result) const;
+        bool cross_line_line(const Line &line, Point &result) const;
 
         bool operator==(const Line &other) const;
 
@@ -134,7 +134,7 @@ class Line {
          * @param
          * d: Vector
         */
-        static Line directed_line(const Vector &p, const Vector &d);
+        static Line directed_line(const Point &p, const Vector &v);
 
         friend std::ostream& operator<< (std::ostream &out, const Line &l) {
             out << "[" << l.a << ", " << l.b << ", " << l.c << "]-{" << l.start << ", " << l.end << "}";

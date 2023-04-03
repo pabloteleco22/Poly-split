@@ -1,1 +1,1 @@
-add_library(Poly point.hpp vector.hpp line.cpp polygon.cpp)
+add_library(Poly point.cpp vector.cpp line.cpp polygon.cpp)

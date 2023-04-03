@@ -7,75 +7,75 @@
 Polygons::Polygons(const Line &l1, const Line &l2) {
     bisector = Line::get_bisector(l1, l2);
 
-    Vector v1{l1.get_start()};
-    Vector v2{l1.get_end()};
-    Vector v3{l2.get_start()};
-    Vector v4{l2.get_end()};
+    Point p1{l1.get_start()};
+    Point p2{l1.get_end()};
+    Point p3{l2.get_start()};
+    Point p4{l2.get_end()};
 
     p1_exist = false;
     p4_exist = false;
-    if (v1 != v4) {
-        Line l1s{v1, bisector.get_line_nearest_point(v1)};
-        Vector p1;
-        p1_exist = l1s.cross_line_segment(l2, p1) && p1 != v4;
+    if (p1 != p4) {
+        Line l1s{p1, bisector.get_line_nearest_point(p1)};
+        Point np1;
+        p1_exist = l1s.cross_line_segment(l2, np1) && np1 != p4;
         if (p1_exist) {
-            leftTriangle.push_back(v1);
-            leftTriangle.push_back(v4);
             leftTriangle.push_back(p1);
+            leftTriangle.push_back(p4);
+            leftTriangle.push_back(np1);
 
-            trapezoid.push_back(p1);
+            trapezoid.push_back(np1);
         } else {
-            trapezoid.push_back(v4);
+            trapezoid.push_back(p4);
         }
 
-        Line l2e{v4, bisector.get_line_nearest_point(v4)};
-        Vector p4;
-        p4_exist = l2e.cross_line_segment(l1, p4) && p4 != v1;
+        Line l2e{p4, bisector.get_line_nearest_point(p4)};
+        Point np4;
+        p4_exist = l2e.cross_line_segment(l1, np4) && np4 != p1;
         if (p4_exist) {
-            leftTriangle.push_back(v4);
-            leftTriangle.push_back(v1);
             leftTriangle.push_back(p4);
+            leftTriangle.push_back(p1);
+            leftTriangle.push_back(np4);
 
-            trapezoid.push_back(p4);
+            trapezoid.push_back(np4);
         } else {
-            trapezoid.push_back(v1);
+            trapezoid.push_back(p1);
         }
     } else {
-        trapezoid.push_back(v4);
-        trapezoid.push_back(v1);
+        trapezoid.push_back(p4);
+        trapezoid.push_back(p1);
     }
 
     p2_exist = false;
     p3_exist = false;
-    if (v2 != v3) {
-        Line l2s{v3, bisector.get_line_nearest_point(v3)};
-        Vector p3;
-        p3_exist = l2s.cross_line_segment(l1, p3) && p3 != v2;
+    if (p2 != p3) {
+        Line l2s{p3, bisector.get_line_nearest_point(p3)};
+        Point np3;
+        p3_exist = l2s.cross_line_segment(l1, np3) && np3 != p2;
         if (p3_exist) {
-            rightTriangle.push_back(v3);
-            rightTriangle.push_back(v2);
             rightTriangle.push_back(p3);
+            rightTriangle.push_back(p2);
+            rightTriangle.push_back(np3);
 
-            trapezoid.push_back(p3);
+            trapezoid.push_back(np3);
         } else {
-            trapezoid.push_back(v2);
+            trapezoid.push_back(p2);
         }
 
-        Line l1e{v2, bisector.get_line_nearest_point(v2)};
-        Vector p2;
-        p2_exist = l1e.cross_line_segment(l2, p2) && p2 != v3;
+        Line l1e{p2, bisector.get_line_nearest_point(p2)};
+        Point np2;
+        p2_exist = l1e.cross_line_segment(l2, np2) && np2 != p3;
         if (p2_exist) {
-            rightTriangle.push_back(v2);
-            rightTriangle.push_back(v3);
             rightTriangle.push_back(p2);
+            rightTriangle.push_back(p3);
+            rightTriangle.push_back(np2);
 
-            trapezoid.push_back(p2);
+            trapezoid.push_back(np2);
         } else {
-            trapezoid.push_back(v3);
+            trapezoid.push_back(p3);
         }
     } else {
-        trapezoid.push_back(v2);
-        trapezoid.push_back(v3);
+        trapezoid.push_back(p2);
+        trapezoid.push_back(p3);
     }
 
     leftTriangleSquare = leftTriangle.count_square();
@@ -92,7 +92,7 @@ bool Polygons::find_cut_line(double square, Line &cut_line) {
 
     if (!leftTriangle.empty() && square < leftTriangleSquare) {
         double m{square / leftTriangleSquare};
-        Vector p{leftTriangle[1] + (leftTriangle[2] - leftTriangle[1]) * m};
+        Point p{leftTriangle[1] + (leftTriangle[2] - leftTriangle[1]) * m};
         if (p1_exist) {
             cut_line = Line{p, leftTriangle[0]};
             return true;
@@ -115,15 +115,15 @@ bool Polygons::find_cut_line(double square, Line &cut_line) {
         } else {
             m = S / trapezoidSquare;
         }
-        Vector p{trapezoid[0] + (trapezoid[3] - trapezoid[0]) * m};
-        Vector pp{trapezoid[1] + (trapezoid[2] - trapezoid[1]) * m};
+        Point p{trapezoid[0] + (trapezoid[3] - trapezoid[0]) * m};
+        Point pp{trapezoid[1] + (trapezoid[2] - trapezoid[1]) * m};
 
         cut_line = Line{p, pp};
         return true;
     } else if(!rightTriangle.empty() && square > leftTriangleSquare + trapezoidSquare) {
         double S{square - leftTriangleSquare - trapezoidSquare};
         double m{S / rightTriangleSquare};
-        Vector p{rightTriangle[2] + (rightTriangle[1] - rightTriangle[2]) * m};
+        Point p{rightTriangle[2] + (rightTriangle[1] - rightTriangle[2]) * m};
         if (p3_exist) {
             cut_line = Line{rightTriangle[0], p};
             return true;
@@ -153,8 +153,8 @@ const char *Polygon::NotEnoughPointsException::what() const noexcept {
 
 Polygon::Polygon() {}
 
-Polygon::Polygon(const Vectors &v) {
-    vertex = v;
+Polygon::Polygon(const Points &p) {
+    vertex = p;
 }
 
 double Polygon::count_square_signed(void) const {
@@ -183,7 +183,7 @@ double Polygon::count_square() const {
 bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const {
     int polygonSize{static_cast<int>(vertex.size())};
 
-    Vectors polygon{vertex};
+    Points polygon{vertex};
     if (!is_clockwise()) {
         std::reverse(polygon.begin(), polygon.end());
     }
@@ -248,7 +248,7 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine
     }
 }
 
-double Polygon::find_distance(const Vector &point) const {
+double Polygon::find_distance(const Point &point) const {
     double distance{std::numeric_limits<double>::infinity()};
     int poly_size{static_cast<int>(vertex.size())};
     if (poly_size < 2)
@@ -256,23 +256,23 @@ double Polygon::find_distance(const Vector &point) const {
 
     for (int i = 0; i < poly_size - 1; i++) {
         Line line{vertex[i], vertex[i + 1]};
-        Vector p{line.get_segment_nearest_point(point)};
-        double l{(p - point).length()};
+        Point p{line.get_segment_nearest_point(point)};
+        double l{p.distance(point)};
         if (l < distance)
             distance = l;
     }
     
     Line line{vertex[poly_size - 1], vertex[0]};
-    Vector p{line.get_segment_nearest_point(point)};
-    double l{(p - point).length()};
+    Point p{line.get_segment_nearest_point(point)};
+    double l{p.distance(point)};
     if (l < distance)
         distance = l;
 
     return distance;
 }
 
-Vector Polygon::find_nearest_point(const Vector &point) const {
-    Vector result;
+Point Polygon::find_nearest_point(const Point &point) const {
+    Point result;
     double distance{std::numeric_limits<double>::infinity()};
     int poly_size{static_cast<int>(vertex.size())};
     if (poly_size < 2)
@@ -280,8 +280,8 @@ Vector Polygon::find_nearest_point(const Vector &point) const {
 
     for (int i = 0; i < poly_size - 1; i++) {
         Line line{vertex[i], vertex[i + 1]};
-        Vector p{line.get_segment_nearest_point(point)};
-        double l{(p - point).length()};
+        Point p{line.get_segment_nearest_point(point)};
+        double l{(p.distance(point))};
         if (l < distance) {
             distance = l;
             result = p;
@@ -289,8 +289,8 @@ Vector Polygon::find_nearest_point(const Vector &point) const {
     }
 
     Line line{vertex[poly_size - 1], vertex[0]};
-    Vector p{line.get_segment_nearest_point(point)};
-    double l{(p - point).length()};
+    Point p{line.get_segment_nearest_point(point)};
+    double l{(p.distance(point))};
     if (l < distance) {
         distance = l;
         result = p;
@@ -299,13 +299,13 @@ Vector Polygon::find_nearest_point(const Vector &point) const {
     return result;
 }
 
-Vector Polygon::count_center() const {
+Point Polygon::count_center() const {
     int n{static_cast<int>(vertex.size())};
     if (n <= 0)
         throw Polygon::NotEnoughPointsException{"The polygon has zero vertices"};
 
-    Vector result;
-    for (Vector v : vertex) {
+    Point result;
+    for (Point v : vertex) {
         result += v;
     }
     result /= n;
@@ -313,8 +313,8 @@ Vector Polygon::count_center() const {
     return result;
 }
 
-void Polygon::split_nearest_edge(const Vector &point) {
-    Vector result;
+void Polygon::split_nearest_edge(const Point &point) {
+    Point result;
     int ri{-1};
     double distance{std::numeric_limits<double>::infinity()};
     int poly_size{static_cast<int>(vertex.size())};
@@ -323,8 +323,8 @@ void Polygon::split_nearest_edge(const Vector &point) {
 
     for (int i = 0; i < poly_size - 1; i++) {
         Line line{vertex[i], vertex[i + 1]};
-        Vector p{line.get_segment_nearest_point(point)};
-        double l{(p - point).length()};
+        Point p{line.get_segment_nearest_point(point)};
+        double l{p.distance(point)};
         if (l < distance) {
             distance = l;
             ri = i;
@@ -332,8 +332,8 @@ void Polygon::split_nearest_edge(const Vector &point) {
         }
     }
     Line line{vertex[poly_size - 1], vertex[0]};
-    Vector p{line.get_segment_nearest_point(point)};
-    double l{(p - point).length()};
+    Point p{line.get_segment_nearest_point(point)};
+    double l{p.distance(point)};
     if (l < distance) {
         distance = l;
         ri = vertex.size() - 1;
@@ -345,20 +345,20 @@ void Polygon::split_nearest_edge(const Vector &point) {
     }
 }
 
-bool Polygon::is_point_inside(const Vector &point) const {
+bool Polygon::is_point_inside(const Point &point) const {
     int pointsCount{static_cast<int>(vertex.size()) - 1};
     if (pointsCount < 2)
         throw Polygon::NotEnoughPointsException{"The polygon has not enough vertices"};
 
     Line l{ Line::directed_line(point, Vector{0.0, 1e100})};
     int result{0};
-    Vector v;
+    Point p;
     for (int i = 0; i < pointsCount; i++) {
         Line line{vertex[i], vertex[i + 1]};
-        result += l.cross_segment_segment(line, v);
+        result += l.cross_segment_segment(line, p);
     }
     Line line{vertex[pointsCount], vertex[0]};
-    result += l.cross_segment_segment(line, v);
+    result += l.cross_segment_segment(line, p);
     return result % 2 != 0;
 }
 
@@ -370,12 +370,12 @@ bool Polygon::is_segment_inside(const Line &segment, size_t excludeLine1, size_t
 
     for (size_t i = 0; i < pointsCount; i++) {
         if (i != excludeLine1 && i != excludeLine2) {
-            Vector p1{vertex[i]};
-            Vector p2{vertex[i + 1 < pointsCount ? i + 1 : 0]};
-            Vector p;
+            Point p1{vertex[i]};
+            Point p2{vertex[i + 1 < pointsCount ? i + 1 : 0]};
+            Point p;
             if ((Line(p1, p2).cross_segment_segment(segment, p)) and
-                ((p1 - p).square_length() > POLY_SPLIT_EPS) and
-                ((p2 - p).square_length() > POLY_SPLIT_EPS)) {
+                (p1.square_distance(p) > POLY_SPLIT_EPS) and
+                (p2.square_distance(p) > POLY_SPLIT_EPS)) {
                 return 0;
             }
         }
@@ -395,7 +395,6 @@ bool Polygon::is_clockwise() const {
     sum += (vertex[0].x - vertex[t].x) * (vertex[0].y + vertex[t].y);
     return sum <= 0;
 }
-
 
 bool Polygon::get_cut(const Line &l1, const Line &l2, double s,
             const Polygon &poly1, const Polygon &poly2,
@@ -422,6 +421,6 @@ bool Polygon::get_cut(const Line &l1, const Line &l2, double s,
     return success;
 }
 
-void Polygon::push_back(const Vector &v) {
-    vertex.push_back(v);
+void Polygon::push_back(const Point &p) {
+    vertex.push_back(p);
 }

@@ -6,7 +6,7 @@
 
 class Polygon {
 private:
-    Vectors vertex;
+    Points vertex;
 
     static bool get_cut(const Line &l1, const Line &l2, double s,
                 const Polygon &poly1, const Polygon &poly2,
@@ -15,7 +15,7 @@ private:
 public:
     Polygon();
 
-    Polygon(const Vectors &v);
+    Polygon(const Points &p);
 
     class NotEnoughPointsException : public std::exception {
         std::string message{"The polygon has not enough vertices"};
@@ -57,7 +57,7 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    double find_distance(const Vector &point) const;
+    double find_distance(const Point &point) const;
 
     /**
      * @brief Returns the point of the polygon nearest to the one passed by
@@ -66,7 +66,7 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    Vector find_nearest_point(const Vector &point) const;
+    Point find_nearest_point(const Point &point) const;
 
     /**
      * @brief Returns the centroid of the polygon.
@@ -74,19 +74,19 @@ public:
      * @throws
      * Polygon::VoidPolygonExcception: if the polygon contains no points.
     */
-    Vector count_center(void) const;
+    Point count_center(void) const;
 
     /**
      * @brief Generates a new vertex in the polygon at the nearest point
      * between the passed by parameter and the edge of the polygon.
     */
-    void split_nearest_edge(const Vector &point);
+    void split_nearest_edge(const Point &point);
 
     /**
      * @brief Returns true if the point passed by parameters is contained
      * within the edges of the polygon. 
     */
-    bool is_point_inside(const Vector &point) const;
+    bool is_point_inside(const Point &point) const;
 
     /**
      * @brief Returns true if the segment passed by parameters is contained
@@ -104,7 +104,7 @@ public:
     */
     bool is_clockwise(void) const;
 
-    const Vectors get_vectors(void) const {
+    const Points get_vectors(void) const {
         return vertex;
     }
 
@@ -112,7 +112,7 @@ public:
      * @brief If the point passed by parameters was not a vertex of the
      * polygon, now it is.
     */
-    void push_back(const Vector &point);
+    void push_back(const Point &point);
 
     /**
      * @brief Returns true if the polygon has no vertex.
@@ -126,11 +126,11 @@ public:
         return *this;
     }
 
-    Vector operator[](size_t index) const {
+    Point operator[](size_t index) const {
         return vertex[index];
     }
 
-    Vector &operator[](size_t index) {
+    Point &operator[](size_t index) {
         return vertex[index];
     }
 
