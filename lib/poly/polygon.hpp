@@ -126,11 +126,11 @@ public:
         return *this;
     }
 
-    Point operator[](size_t index) const {
+    Point &operator[](size_t index) {
         return vertex[index];
     }
 
-    Point &operator[](size_t index) {
+    Point operator[](size_t index) const {
         return vertex[index];
     }
 

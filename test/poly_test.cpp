@@ -35,6 +35,22 @@ TEST(PointTest, Neg) {
     ASSERT_EQ(neg.y, -expected_y);
 }
 
+TEST(PointTest, ChangingPoint) {
+    Point point;
+
+    ASSERT_EQ(point.x, 0);
+    ASSERT_EQ(point.y, 0);
+
+    const double expected_x{1.3};
+    const double expected_y{3.7};
+
+    point.x = expected_x;
+    point.y = expected_y;
+
+    ASSERT_EQ(point.x, expected_x);
+    ASSERT_EQ(point.y, expected_y);
+}
+
 TEST(PointTest, Length) {
     const double x1{1.3};
     const double y1{3.7};
@@ -653,6 +669,25 @@ TEST(SegmentTest, TanAngle1) {
 }
 
 /* Polygon Tests */
+TEST(PolygonTest, ChangingPoint) {
+    Point p1{2, 0};
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(p1);
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
+    Polygon pol{pol_points};
+
+    ASSERT_EQ(pol[1], p1);
+
+    Point new_p1{5, 8};
+
+    pol[1].x = new_p1.x;
+    pol[1].y = new_p1.y;
+
+    ASSERT_EQ(pol[1], new_p1);
+}
+
 TEST(PolygonTest, CountSquare) {
     Points pol_points;
     pol_points.push_back(Point{});
