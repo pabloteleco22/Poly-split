@@ -3,7 +3,13 @@
 #include <cassert>
 #include <cmath>
 
-Line::Line() {}
+Line::Line() {
+    a = 0;
+    b = 0;
+    c = 0;
+    p1 = Point{};
+    p2 = Point{};
+}
 
 Line::Line(const Point &p1, const Point &p2) : p1(p1), p2(p2) {
     a = p1.y - p2.y;
@@ -40,21 +46,10 @@ double Line::get_distance(const Point &point) const {
     return n / m;
 }
 
-Point Line::get_line_nearest_point(const Point &point) const {
+Point Line::get_nearest_point(const Point &point) const {
     Vector dir{b, -a};
     double u{Vector{point - p1}.dot(dir) / dir.square_length()};
     return p1 + dir * u;
-}
-
-Point Line::get_segment_nearest_point(const Point &point) const {
-    Vector dir{b, -a};
-    double u{Vector{point - p1}.dot(dir) / dir.square_length()};
-    if (u < 0)
-        return p1;
-    else if (u > 1)
-        return p2;
-    else
-        return p1 + dir * u;
 }
 
 PointSide Line::point_side(const Point &point) const {
@@ -84,33 +79,7 @@ inline double maximum(double a, double b) {
     return (((a) < (b)) ? (b) : (a));
 }
 
-bool Line::cross_line_segment(const Line &line, Point &result) const {
-    double d{det(a, b, line.a, line.b)};
-    if (d == 0)
-        return false;
-
-    result.x = -det(c, b, line.c, line.b) / d;
-    result.y = -det(a, c, line.a, line.c) / d;
-
-    return inside(result.x, minimum(line.p1.x, line.p2.x), maximum(line.p1.x, line.p2.x)) &&
-            inside(result.y, minimum(line.p1.y, line.p2.y), maximum(line.p1.y, line.p2.y));
-}
-
-bool Line::cross_segment_segment(const Line &line, Point &result) const {
-    double d{det(a, b, line.a, line.b)};
-    if (d == 0)
-        return false;
-
-    result.x = -det(c, b, line.c, line.b) / d;
-    result.y = -det(a, c, line.a, line.c) / d;
-
-    return inside(result.x, minimum(p1.x, p2.x), maximum(p1.x, p2.x)) &&
-           inside(result.y, minimum(p1.y, p2.y), maximum(p1.y, p2.y)) &&
-           inside(result.x, minimum(line.p1.x, line.p2.x), maximum(line.p1.x, line.p2.x)) &&
-           inside(result.y, minimum(line.p1.y, line.p2.y), maximum(line.p1.y, line.p2.y));
-}
-
-bool Line::cross_line_line(const Line &line, Point &result) const {
+bool Line::cross_line(const Line &line, Point &result) const {
     double d{det(a, b, line.a, line.b)};
     if (d == 0)
         return false;
@@ -168,10 +137,6 @@ double Line::square_length() const {
     double y{p2.y - p1.y};
 
     return x * x + y * y;
-}
-
-Line Line::reverse() const {
-    return Line{p2, p1};
 }
 
 Point Line::get_point_along(double t) const {

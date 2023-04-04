@@ -3,6 +3,11 @@
 #include <cmath>
 
 Segment::Segment() {
+    l = Line{};
+}
+
+Segment::Segment(const Segment &s) {
+    l = s.l;
 }
 
 Segment::Segment(const Line &l) {
@@ -46,7 +51,7 @@ double Segment::square_length() const {
  * the new end point and vice versa
 */
 Segment Segment::reverse() const {
-    return Segment{l.reverse()};
+    return Segment{end, start};
 }
 
 inline bool inside(double v, double min, double max) {
@@ -165,8 +170,16 @@ bool Segment::cross_line(const Segment &seg, Point &result) const {
            inside(result.y, minimum(seg.start.y, seg.end.y), maximum(seg.start.y, seg.end.y));
 }
 
+bool cross_line(const Line &lin, const Segment &seg, Point &result) {
+    return seg.cross_line(lin, result);
+}
+
 bool Segment::operator==(const Segment &other) const {
     return start == other.start and end == other.end;
+}
+
+Segment Segment::operator=(const Segment &other) const {
+    return Segment{other};
 }
 
 /**
@@ -201,8 +214,8 @@ double Segment::get_tan_angle(const Segment &s1, const Segment &s2) {
     return (s1.l.a * s2.l.b - s2.l.a * s1.l.b) / (s1.l.a * s2.l.a + s1.l.b * s2.l.b);
 }
 
-std::ostream &operator<<(std::ostream &out, const Segment &l) {
-    out << l;
+std::ostream &operator<<(std::ostream &out, const Segment &s) {
+    out << s.l;
     return out;
 }
 

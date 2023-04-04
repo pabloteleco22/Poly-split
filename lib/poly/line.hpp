@@ -41,12 +41,6 @@ class Line {
         double square_length() const;
 
         /**
-         * @brief It returns the same segment but the start point is
-         * the new end point and vice versa
-        */
-        Line reverse() const;
-
-        /**
          * @brief Returns a point on the line one distance t away from
          * the start point
         */
@@ -60,44 +54,12 @@ class Line {
         /**
          * @brief Returns the nearest point from the line
         */
-        Point get_line_nearest_point(const Point &point) const;
-
-        /**
-         * @brief Returns the nearest point from the segment,
-         * which means that it takes into account the start
-         * and end points
-        */
-        Point get_segment_nearest_point(const Point &point) const;
+        Point get_nearest_point(const Point &point) const;
 
         /**
          * @brief Returns if the point is over, under or in the line
         */
         PointSide point_side(const Point &point) const;
-
-        /**
-         * @brief Returns whether the line and the segment intersect and
-         * the point of intersection between them
-         * 
-         * @param 
-         * line: The segment, not the line.
-         *
-         * @param
-         * result: The intersection point.
-         * 
-         * @return If the line and the segment intersect
-        */
-        bool cross_line_segment(const Line &line, Point &result) const;
-
-        /**
-         * @brief Returns whether the thw segments intersect and
-         * the point of intersection between them
-         * 
-         * @param
-         * result: The intersection point.
-         * 
-         * @return If the line and the segment intersect
-        */
-        bool cross_segment_segment(const Line &line, Point &result) const;
 
         /**
          * @brief Returns whether the two lines intersect and
@@ -108,7 +70,7 @@ class Line {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_line_line(const Line &line, Point &result) const;
+        bool cross_line(const Line &line, Point &result) const;
 
         bool operator==(const Line &other) const;
 
@@ -149,6 +111,7 @@ class Segment {
 
     public:
         Segment();
+        Segment(const Segment &s);
         Segment(const Line &l);
         Segment(const Point &start, const Point &end);
         Line make_line() const;
@@ -199,11 +162,6 @@ class Segment {
 
         /**
          * @brief Returns if the point is over, under or in the line
-         * 
-         * @returns
-         *  1 if above,
-         *  0 if in,
-         *  -1 if below
         */
         PointSide point_side(const Point &point) const;
 
@@ -232,7 +190,22 @@ class Segment {
         */
         bool cross_line(const Segment &seg, Point &result) const;
 
+        /**
+         * @brief Returns whether the line and the segment intersect and
+         * the point of intersection between them
+         * 
+         * @param 
+         * line: The segment, not the line.
+         *
+         * @param
+         * result: The intersection point.
+         * 
+         * @return If the line and the segment intersect
+        */
+        friend bool cross_line(const Line &lin, const Segment &seg, Point &result);
+
         bool operator==(const Segment &other) const;
+        Segment operator=(const Segment &other) const;
 
         /**
          * @brief Returns true if s1 and s2 are the same line
@@ -249,5 +222,5 @@ class Segment {
         */
         static double get_tan_angle(const Segment &s1, const Segment &s2);
 
-        friend std::ostream &operator<<(std::ostream &out, const Segment &l);
+        friend std::ostream &operator<<(std::ostream &out, const Segment &s);
 };

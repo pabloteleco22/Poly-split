@@ -8,9 +8,9 @@ class Polygon {
 private:
     Points vertex;
 
-    static bool get_cut(const Line &l1, const Line &l2, double s,
+    static bool get_cut(const Segment &s1, const Segment &s2, double s,
                 const Polygon &poly1, const Polygon &poly2,
-                Line &cut);
+                Segment &cut);
 
 public:
     Polygon();
@@ -48,7 +48,7 @@ public:
      * true: if it is possible.
      * false: if it is not possible.
     */
-    bool split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine) const;
+    bool split(double square, Polygon &poly1, Polygon &poly2, Segment &cutLine) const;
 
     /**
      * @brief Returns the distance between the nearest point of the polygon
@@ -97,7 +97,7 @@ public:
      * @param
      * excludeLine2: The index of the second segment to be disregarded in the analysis.
     */
-    bool is_segment_inside(const Line &segment, size_t excludeLine1, size_t excludeLine2) const;
+    bool is_segment_inside(const Segment &segment, size_t excludeLine1, size_t excludeLine2) const;
     
     /**
      * @brief Returns true if the vertex are in clock wise order.
@@ -150,8 +150,8 @@ public:
 };
 
 struct Polygons {
-    Polygons(const Line &l1, const Line &l2);
-    bool find_cut_line(double square, Line &cut_line);
+    Polygons(const Segment &l1, const Segment &l2);
+    bool find_cut_line(double square, Segment &cut_line);
 
     Line bisector;
 
