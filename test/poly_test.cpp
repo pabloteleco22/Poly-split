@@ -840,7 +840,7 @@ TEST(PolygonTest, SplitNearestEdgeCorner) {
     ASSERT_EQ(poly.size(), expected_size);
 }
 
-TEST(PolygonTest, IsPointInsideTrue) {
+TEST(PolygonTest, IsPointInsideTrue1) {
     Points pol_points;
     pol_points.push_back(Point{});
     pol_points.push_back(Point{2, 0});
@@ -849,6 +849,19 @@ TEST(PolygonTest, IsPointInsideTrue) {
     const Polygon pol{pol_points};
 
     const Point point{1, 1};
+
+    ASSERT_TRUE(pol.is_point_inside(point));
+}
+
+TEST(PolygonTest, IsPointInsideTrue2) {
+    Points pol_points;
+    pol_points.push_back(Point{});
+    pol_points.push_back(Point{2, 0});
+    pol_points.push_back(Point{2, 2});
+    pol_points.push_back(Point{0, 2});
+    const Polygon pol{pol_points};
+
+    const Point point{2, 1};
 
     ASSERT_TRUE(pol.is_point_inside(point));
 }
