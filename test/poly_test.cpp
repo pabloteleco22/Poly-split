@@ -128,16 +128,6 @@ TEST(LineTest, CustomLine) {
     ASSERT_EQ(lin.get_p2(), end_point);
 }
 
-TEST(LineTest, Length) {
-    const Point start_point{5, 8};
-    const Point end_point{8, 3};
-    const Line lin{start_point, end_point};
-
-    const double expected_distance{end_point.distance(start_point)};
-
-    ASSERT_EQ(lin.length(), expected_distance);
-}
-
 TEST(LineTest, PointAlong) {
     const Point start_point;
     const Point end_point{25, 25};
@@ -687,7 +677,7 @@ TEST(PolygonTest, SplitTrue) {
     Polygon second_poly;
     Segment cut_line;
     const double expected_area{3};
-    const Segment expected_cut_line{{1.5, 2}, {1.5, 0}};
+    const Segment expected_cut_line{Point{1.5, 2}, Point{1.5, 0}};
 
     ASSERT_TRUE(original_poly.split(expected_area, first_poly, second_poly, cut_line));
     ASSERT_EQ(second_poly.count_square(), expected_area);

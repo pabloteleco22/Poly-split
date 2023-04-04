@@ -17,6 +17,7 @@ class Line {
 
     public:
         Line();
+        Line(const Line &other);
         Line(const Point &start, const Point &end);
         Line(double a, double b, double c);
 
@@ -29,11 +30,6 @@ class Line {
          * @brief It returns the end point of the segment
         */
         Point get_p2() const;
-
-        /**
-         * @brief It returns the length of the segment
-        */
-        double length() const;
 
         /**
          * @brief It returns the square of the length of the segment
@@ -73,6 +69,8 @@ class Line {
         bool cross_line(const Line &line, Point &result) const;
 
         bool operator==(const Line &other) const;
+
+        Line &operator=(const Line &other);
 
         /**
          * @brief Returns true if l1 and l2 are the same line
@@ -205,7 +203,7 @@ class Segment {
         friend bool cross_line(const Line &lin, const Segment &seg, Point &result);
 
         bool operator==(const Segment &other) const;
-        Segment operator=(const Segment &other) const;
+        Segment &operator=(const Segment &other);
 
         /**
          * @brief Returns true if s1 and s2 are the same line

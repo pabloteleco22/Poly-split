@@ -11,6 +11,14 @@ Line::Line() {
     p2 = Point{};
 }
 
+Line::Line(const Line &other) {
+    a = other.a;
+    b = other.b;
+    c = other.c;
+    p1 = other.p1;
+    p2 = other.p2;
+}
+
 Line::Line(const Point &p1, const Point &p2) : p1(p1), p2(p2) {
     a = p1.y - p2.y;
     b = p2.x - p1.x;
@@ -94,6 +102,16 @@ bool Line::operator==(const Line &other) const {
     return (point_side(other.p1) == PointSide::Inside) and (point_side(other.p2) == PointSide::Inside);
 }
 
+Line &Line::operator=(const Line &other) {
+    p1 = other.p1;
+    p2 = other.p2;
+    a = other.a;
+    b = other.b;
+    c = other.c;
+
+    return *this;
+}
+
 bool Line::is_same(const Line &l1, const Line &l2) {
     return l1 == l2;
 }
@@ -123,13 +141,6 @@ Point Line::get_p1() const {
 
 Point Line::get_p2() const {
     return p2;
-}
-
-double Line::length() const {
-    double x{p2.x - p1.x};
-    double y{p2.y - p1.y};
-
-    return sqrt(x * x + y * y);
 }
 
 double Line::square_length() const {

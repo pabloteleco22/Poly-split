@@ -5,9 +5,6 @@
 #include <exception>
 #include <cmath>
 
-
-#include <iostream>
-
 Polygons::Polygons(const Segment &s1, const Segment &s2) {
     bisector = Segment::get_bisector(s1, s2);
 
@@ -105,13 +102,13 @@ bool Polygons::find_cut_line(double square, Segment &cut_line) {
             return true;
         }
     } else if(leftTriangleSquare < square && square < (leftTriangleSquare + trapezoidSquare)) {
-        Line t{trapezoid[0], trapezoid[3]};
-        double tgA{Line::get_tan_angle(t, bisector)};
+        Segment t{trapezoid[0], trapezoid[3]};
+        double tgA{Segment::get_tan_angle(t, bisector)};
         double S{square - leftTriangleSquare};
         double m;
         if (fabs(tgA) > POLY_SPLIT_EPS) {
-            double a{Line(trapezoid[0], trapezoid[1]).length()};
-            double b{Line(trapezoid[2], trapezoid[3]).length()};
+            double a{Segment(trapezoid[0], trapezoid[1]).length()};
+            double b{Segment(trapezoid[2], trapezoid[3]).length()};
             double hh{2.0 * trapezoidSquare / (a + b)};
             double d{a * a - 4.0 * tgA * S};
             double h{-(-a + sqrt(d)) / (2.0 * tgA)};
@@ -122,17 +119,18 @@ bool Polygons::find_cut_line(double square, Segment &cut_line) {
         Point p{trapezoid[0] + (trapezoid[3] - trapezoid[0]) * m};
         Point pp{trapezoid[1] + (trapezoid[2] - trapezoid[1]) * m};
 
-        cut_line = Line{p, pp};
+        cut_line = Segment{p, pp};
+
         return true;
     } else if(!rightTriangle.empty() && square > leftTriangleSquare + trapezoidSquare) {
         double S{square - leftTriangleSquare - trapezoidSquare};
         double m{S / rightTriangleSquare};
         Point p{rightTriangle[2] + (rightTriangle[1] - rightTriangle[2]) * m};
         if (p3_exist) {
-            cut_line = Line{rightTriangle[0], p};
+            cut_line = Segment{rightTriangle[0], p};
             return true;
         } else if (p2_exist) {
-            cut_line = Line{p, rightTriangle[0]};
+            cut_line = Segment{p, rightTriangle[0]};
             return true;
         }
     }
@@ -184,7 +182,7 @@ double Polygon::count_square() const {
     return fabs(count_square_signed());
 }
 
-bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Segment &cutLine) const {
+bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Segment &cut_line) const {
     int polygon_size{static_cast<int>(vertex.size())};
 
     Points polygon{vertex};
@@ -226,14 +224,13 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Segment &cutL
             Segment cut;
 
             if (get_cut(l1, l2, square, p1, p2, cut)) {
-                double sqLength{cut.square_length()};
-                std::cout << "Hola" << std::endl;
+                double sq_length{cut.square_length()};
 
-                if (sqLength < min_sq_length && is_segment_inside(cut, i, j)) {
-                    min_sq_length = sqLength;
+                if (sq_length < min_sq_length && is_segment_inside(cut, i, j)) {
+                    min_sq_length = sq_length;
                     poly1 = p1;
                     poly2 = p2;
-                    cutLine = cut;
+                    cut_line = cut;
                     min_cut_line_exists = true;
                 }
             }
@@ -241,11 +238,11 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Segment &cutL
     }
 
     if (min_cut_line_exists) {
-        poly1.push_back(cutLine.get_start());
-        poly1.push_back(cutLine.get_end());
+        poly1.push_back(cut_line.get_start());
+        poly1.push_back(cut_line.get_end());
 
-        poly2.push_back(cutLine.get_end());
-        poly2.push_back(cutLine.get_start());
+        poly2.push_back(cut_line.get_end());
+        poly2.push_back(cut_line.get_start());
 
         return true;
     } else {
@@ -414,8 +411,9 @@ bool Polygon::get_cut(const Segment &s1, const Segment &s2, double s,
     if (sn1 > 0) {
         Polygons res{s1, s2};
 
-        if (res.find_cut_line(sn1, cut))
+        if (res.find_cut_line(sn1, cut)) {
             success = true;
+        }
     } else if (sn2 > 0) {
         Polygons res{s2, s1};
 

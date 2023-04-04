@@ -178,8 +178,10 @@ bool Segment::operator==(const Segment &other) const {
     return start == other.start and end == other.end;
 }
 
-Segment Segment::operator=(const Segment &other) const {
-    return Segment{other};
+Segment &Segment::operator=(const Segment &other) {
+    l = other.l;
+
+    return *this;
 }
 
 /**
