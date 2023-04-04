@@ -1,5 +1,7 @@
 #include "point.hpp"
 
+#include <cmath>
+
 Point Point::operator-() const {
     return Point{-x, -y};
 }

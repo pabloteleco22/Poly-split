@@ -3,14 +3,15 @@
 #include <cfloat>
 #include <algorithm>
 #include <exception>
+#include <cmath>
 
 Polygons::Polygons(const Line &l1, const Line &l2) {
     bisector = Line::get_bisector(l1, l2);
 
-    Point p1{l1.get_start()};
-    Point p2{l1.get_end()};
-    Point p3{l2.get_start()};
-    Point p4{l2.get_end()};
+    Point p1{l1.get_p1()};
+    Point p2{l1.get_p2()};
+    Point p3{l2.get_p1()};
+    Point p4{l2.get_p2()};
 
     p1_exist = false;
     p4_exist = false;
@@ -235,11 +236,11 @@ bool Polygon::split(double square, Polygon &poly1, Polygon &poly2, Line &cutLine
     }
 
     if (minCutLine_exists) {
-        poly1.push_back(cutLine.get_start());
-        poly1.push_back(cutLine.get_end());
+        poly1.push_back(cutLine.get_p1());
+        poly1.push_back(cutLine.get_p2());
 
-        poly2.push_back(cutLine.get_end());
-        poly2.push_back(cutLine.get_start());
+        poly2.push_back(cutLine.get_p2());
+        poly2.push_back(cutLine.get_p1());
 
         return true;
     } else {

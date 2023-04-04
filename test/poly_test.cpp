@@ -1,5 +1,7 @@
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 #include "../lib/poly/point.hpp"
 #include "../lib/poly/vector.hpp"
 #include "../lib/poly/line.hpp"
@@ -113,8 +115,8 @@ TEST(LineTest, DefaultLine) {
     const Line lin;
     const Point expected_point{0, 0};
 
-    ASSERT_EQ(lin.get_start(), expected_point);
-    ASSERT_EQ(lin.get_end(), expected_point);
+    ASSERT_EQ(lin.get_p1(), expected_point);
+    ASSERT_EQ(lin.get_p2(), expected_point);
 }
 
 TEST(LineTest, CustomLine) {
@@ -122,8 +124,8 @@ TEST(LineTest, CustomLine) {
     const Point end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
-    ASSERT_EQ(lin.get_start(), start_point);
-    ASSERT_EQ(lin.get_end(), end_point);
+    ASSERT_EQ(lin.get_p1(), start_point);
+    ASSERT_EQ(lin.get_p2(), end_point);
 }
 
 TEST(LineTest, reverse) {
@@ -131,8 +133,8 @@ TEST(LineTest, reverse) {
     const Point end_point{8.9, 3};
     const Line lin{start_point, end_point};
 
-    ASSERT_EQ(lin.reverse().get_start(), end_point);
-    ASSERT_EQ(lin.reverse().get_end(), start_point);
+    ASSERT_EQ(lin.reverse().get_p1(), end_point);
+    ASSERT_EQ(lin.reverse().get_p2(), start_point);
 }
 
 TEST(LineTest, Length) {
@@ -223,7 +225,7 @@ TEST(LineTest, PointSideAbove) {
     const Point end_point{10, 10};
     const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
-    const int expected_result{1};
+    const PointSide expected_result{PointSide::Above};
 
     ASSERT_EQ(lin.point_side(distance_point), expected_result);
 }
@@ -233,7 +235,7 @@ TEST(LineTest, PointSideBelow) {
     const Point end_point{10, 10};
     const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
-    const int expected_result{-1};
+    const PointSide expected_result{PointSide::Below};
 
     ASSERT_EQ(lin.point_side(distance_point), expected_result);
 }
@@ -243,7 +245,7 @@ TEST(LineTest, PointSideInside) {
     const Point end_point{10, 10};
     const Point distance_point{-1, -1};
     const Line lin{start_point, end_point};
-    const int expected_result{0};
+    const PointSide expected_result{PointSide::Inside};
 
     ASSERT_EQ(lin.point_side(distance_point), expected_result);
 }
@@ -421,6 +423,329 @@ TEST(LineTest, TanAngle1) {
 }
 
 TEST(LineTest, DirectedLine) {
+    const Point point{1, 2};
+    const Point vector{1, 1};
+    const Line result_line = Line::directed_line(point, vector);
+    const Point expected_start_point{1, 2};
+    const Point expected_end_point{4.5, 5.5};
+    const Line expected_line{expected_start_point, expected_end_point};
+
+    ASSERT_TRUE(Line::is_same(result_line, expected_line));
+}
+
+/* Segment Tests */
+TEST(SegmentTest, DefaultSegment) {
+    const Segment seg;
+    const Point expected_point{0, 0};
+
+    ASSERT_EQ(seg.get_start(), expected_point);
+    ASSERT_EQ(seg.get_end(), expected_point);
+}
+
+TEST(SegmentTest, CustomSegment) {
+    const Point start_point{5, 8};
+    const Point end_point{8.9, 3};
+    const Segment seg{start_point, end_point};
+
+    ASSERT_EQ(seg.get_start(), start_point);
+    ASSERT_EQ(seg.get_end(), end_point);
+}
+
+TEST(SegmentTest, reverse) {
+    const Point start_point{5, 8};
+    const Point end_point{8.9, 3};
+    const Segment seg{start_point, end_point};
+
+    ASSERT_EQ(seg.reverse().get_start(), end_point);
+    ASSERT_EQ(seg.reverse().get_end(), start_point);
+}
+
+TEST(SegmentTest, Length) {
+    const Point start_point{5, 8};
+    const Point end_point{8, 3};
+    const Segment seg{start_point, end_point};
+
+    const double expected_distance{end_point.distance(start_point)};
+
+    ASSERT_EQ(seg.length(), expected_distance);
+}
+
+TEST(SegmentTest, PointAlong) {
+    const Point start_point;
+    const Point end_point{25, 25};
+    const Segment seg{start_point, end_point};
+
+    const Point expected_point{8.48528137423857, 8.48528137423857};
+    const Point result = seg.get_point_along(12);
+
+    ASSERT_EQ(result, expected_point);
+}
+
+TEST(SegmentTest, DistanceIn) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
+    const Segment seg{start_point, end_point};
+
+    const double expected_distance{1.414213562};
+
+    ASSERT_LE(fabs(fabs(seg.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
+}
+
+TEST(SegmentTest, DistanceOut) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
+    const Line lin{start_point, end_point};
+
+    const double expected_distance{1.414213562};
+
+    ASSERT_LE(fabs(fabs(lin.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
+}
+
+TEST(SegmentTest, LineNearestPointIn) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
+    const Line lin{start_point, end_point};
+    const Point expected_point{3, 3};
+
+    ASSERT_EQ(lin.get_line_nearest_point(distance_point), expected_point);
+}
+
+TEST(SegmentTest, LineNearestPointOut) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
+    const Line lin{start_point, end_point};
+    const Point expected_point{-3, -3};
+
+    ASSERT_EQ(lin.get_line_nearest_point(distance_point), expected_point);
+}
+
+TEST(SegmentTest, SegmentNearestPoint) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
+    const Line lin{start_point, end_point};
+    const Point expected_point{3, 3};
+
+    ASSERT_EQ(lin.get_segment_nearest_point(distance_point), expected_point);
+}
+
+TEST(SegmentTest, SegmentNearestPointOut) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
+    const Line lin{start_point, end_point};
+    const Point expected_point{0, 0};
+
+    ASSERT_EQ(lin.get_segment_nearest_point(distance_point), expected_point);
+}
+
+TEST(SegmentTest, PointSideAbove) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{2, 4};
+    const Line lin{start_point, end_point};
+    const PointSide expected_result{PointSide::Above};
+
+    ASSERT_EQ(lin.point_side(distance_point), expected_result);
+}
+
+TEST(SegmentTest, PointSideBelow) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-2, -4};
+    const Line lin{start_point, end_point};
+    const PointSide expected_result{PointSide::Below};
+
+    ASSERT_EQ(lin.point_side(distance_point), expected_result);
+}
+
+TEST(SegmentTest, PointSideInside) {
+    const Point start_point;
+    const Point end_point{10, 10};
+    const Point distance_point{-1, -1};
+    const Line lin{start_point, end_point};
+    const PointSide expected_result{PointSide::Inside};
+
+    ASSERT_EQ(lin.point_side(distance_point), expected_result);
+}
+
+TEST(SegmentTest, CrossLineLineTrue) {
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
+    const Line lin1{start_point1, end_point1};
+    const Line lin2{start_point2, end_point2};
+
+    ASSERT_TRUE(lin1.cross_line_line(lin2, inter_point));
+    ASSERT_EQ(inter_point, expected_inter_point);
+}
+
+TEST(SegmentTest, CrossLineLineFalse) {
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{-4, 0};
+    Point inter_point;
+    const Line lin1{start_point1, end_point1};
+    const Line lin2{start_point2, end_point2};
+
+    ASSERT_FALSE(lin1.cross_line_line(lin2, inter_point));
+}
+
+TEST(SegmentTest, CrossLineSegmentTrue) {
+    const Point line_start_point;
+    const Point line_end_point{4, 4};
+    const Point segment_start_point{0, 4};
+    const Point segment_end_point{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
+    const Line line{line_start_point, line_end_point};
+    const Line segment{segment_start_point, segment_end_point};
+
+    ASSERT_TRUE(line.cross_line_segment(segment, inter_point));
+    ASSERT_EQ(inter_point, expected_inter_point);
+}
+
+TEST(SegmentTest, CrossLineSegmentFalse) {
+    const Point line_start_point;
+    const Point line_end_point{4, 4};
+    const Point segment_start_point{0, 6};
+    const Point segment_end_point{18, 0};
+    Point inter_point;
+    const Line line{line_start_point, line_end_point};
+    const Line segment{segment_start_point, segment_end_point};
+
+    ASSERT_FALSE(segment.cross_line_segment(line, inter_point));
+}
+
+TEST(SegmentTest, CrossSegmentSegmentTrue) {
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 4};
+    const Point end_point2{6, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
+    const Line segment1{start_point1, end_point1};
+    const Line segment2{start_point2, end_point2};
+
+    ASSERT_TRUE(segment1.cross_segment_segment(segment2, inter_point));
+    ASSERT_EQ(inter_point, expected_inter_point);
+}
+
+TEST(SegmentTest, CrossSegmentSegmentFalse1) {
+    const Point start_point1;
+    const Point end_point1{4, 4};
+    const Point start_point2{0, 6};
+    const Point end_point2{18, 0};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
+    const Line segment1{start_point1, end_point1};
+    const Line segment2{start_point2, end_point2};
+
+    ASSERT_FALSE(segment1.cross_segment_segment(segment2, inter_point));
+}
+
+TEST(SegmentTest, CrossSegmentSegmentFalse2) {
+    const Point start_point1{0, 6};
+    const Point end_point1{18, 0};
+    const Point start_point2;
+    const Point end_point2{4, 4};
+    Point inter_point;
+    const Point expected_inter_point{2.4, 2.4};
+    const Line segment1{start_point1, end_point1};
+    const Line segment2{start_point2, end_point2};
+
+    ASSERT_FALSE(segment1.cross_segment_segment(segment2, inter_point));
+}
+
+TEST(SegmentTest, IsSameTrue) {
+    const Point start_point1;
+    const Point end_point1{2, 4};
+    const Point start_point2;
+    const Point end_point2{4, 8};
+    const Line line1{start_point1, end_point1};
+    const Line line2{start_point2, end_point2};
+
+    ASSERT_TRUE(Line::is_same(line1, line2));
+}
+
+TEST(SegmentTest, IsSameFalse) {
+    const Point start_point1;
+    const Point end_point1{2, 4};
+    const Point start_point2;
+    const Point end_point2{4, 8.1};
+    const Line line1{start_point1, end_point1};
+    const Line line2{start_point2, end_point2};
+
+    ASSERT_FALSE(Line::is_same(line1, line2));
+}
+
+TEST(SegmentTest, Bisector1) {
+    const Point start_point1;
+    const Point end_point1{0, 1};
+    const Point start_point2;
+    const Point end_point2{1, 0};
+    const Line line1{start_point1, end_point1};
+    const Line line2{start_point2, end_point2};
+
+    const Point expected_start_point;
+    const Point expected_end_point{1, -1};
+    const Line expected_bisector{expected_start_point, expected_end_point};
+
+    const Line returned = Line::get_bisector(line1, line2);
+    Point inter;
+
+    ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
+    ASSERT_EQ(returned.get_distance(expected_end_point), 0);
+}
+
+TEST(SegmentTest, Bisector2) {
+    const Point start_point;
+    const Point end_point{0, 1};
+    const Line line{start_point, end_point};
+
+    const Point expected_start_point;
+    const Point expected_end_point{end_point};
+    const Line expected_bisector{expected_start_point, expected_end_point};
+
+    const Line returned = Line::get_bisector(line, line);
+    Point inter;
+
+    ASSERT_FALSE(returned.cross_line_line(expected_bisector, inter));
+    ASSERT_EQ(returned.get_distance(expected_end_point), 0);
+}
+
+TEST(SegmentTest, TanAngleZero) {
+    const Point start_point;
+    const Point end_point{0, 1};
+    const Line line{start_point, end_point};
+
+    const double expected_tan{0};
+
+    ASSERT_EQ(Line::get_tan_angle(line, line), expected_tan);
+}
+
+TEST(SegmentTest, TanAngle1) {
+    const Point start_point1;
+    const Point end_point1{0, 1};
+    const Point start_point2;
+    const Point end_point2{1, 1};
+    const Line line1{start_point1, end_point1};
+    const Line line2{start_point2, end_point2};
+
+    const double expected_tan{-1};
+
+    ASSERT_EQ(Line::get_tan_angle(line1, line2), expected_tan);
+}
+
+TEST(SegmentTest, DirectedLine) {
     const Point point{1, 2};
     const Point vector{1, 1};
     const Line result_line = Line::directed_line(point, vector);

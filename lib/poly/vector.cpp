@@ -1,4 +1,5 @@
 #include "vector.hpp"
+#include <cmath>
 
 Vector::Vector(const Point &p) {
     this->p = p;

@@ -2,7 +2,6 @@
 
 #include <ostream>
 #include <vector>
-#include <cmath>
 
 const double POLY_SPLIT_EPS = 1E-6;
 
