@@ -71,11 +71,6 @@ class Line {
 
         /**
          * @brief Returns if the point is over, under or in the line
-         * 
-         * @returns
-         *  1 if above,
-         *  0 if in,
-         *  -1 if below
         */
         PointSide point_side(const Point &point) const;
 
@@ -84,7 +79,7 @@ class Line {
          * the point of intersection between them
          * 
          * @param 
-         * line: The line, not the segment.
+         * line: The segment, not the line.
          *
          * @param
          * result: The intersection point.
@@ -142,23 +137,21 @@ class Line {
         */
         static Line directed_line(const Point &p, const Vector &v);
 
-        friend std::ostream& operator<< (std::ostream &out, const Line &l) {
-            out << "[" << l.a << ", " << l.b << ", " << l.c << "]-{" << l.p1 << ", " << l.p2 << "}";
-            return out;
-        }
-
+        friend std::ostream &operator<<(std::ostream &out, const Line &l);
         friend class Segment;
 };
 
 class Segment {
     private:
         Line l;
+        Point &start = l.p1;
+        Point &end = l.p2;
 
     public:
         Segment();
         Segment(const Line &l);
         Segment(const Point &start, const Point &end);
-        Segment(double a, double b, double c);
+        Line make_line() const;
 
         /**
          * @brief It returns the start point of the segment
@@ -226,7 +219,7 @@ class Segment {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_line_segment(const Segment &line, Point &result) const;
+        bool cross_line(const Line &line, Point &result) const;
 
         /**
          * @brief Returns whether the thw segments intersect and
@@ -237,48 +230,24 @@ class Segment {
          * 
          * @return If the line and the segment intersect
         */
-        bool cross_segment_segment(const Segment &line, Point &result) const;
-
-        /**
-         * @brief Returns whether the two lines intersect and
-         * the point of intersection between them
-         * 
-         * @param
-         * result: The intersection point.
-         * 
-         * @return If the line and the segment intersect
-        */
-        bool cross_line_line(const Segment &line, Point &result) const;
+        bool cross_line(const Segment &seg, Point &result) const;
 
         bool operator==(const Segment &other) const;
 
         /**
-         * @brief Returns true if l1 and l2 are the same line
+         * @brief Returns true if s1 and s2 are the same line
         */
-        static bool is_same(const Segment &l1, const Segment &l2);
+        static bool is_same(const Segment &s1, const Segment &s2);
 
         /**
          * @brief Returns the bisector between the two lines
         */
-        static Segment get_bisector(const Segment &l1, const Segment &l2);
+        static Line get_bisector(const Segment &s1, const Segment &s2);
 
         /**
          * @brief Returns the tangent of the angle between the two lines in radians
         */
-        static double get_tan_angle(const Segment &l1, const Segment &l2);
+        static double get_tan_angle(const Segment &s1, const Segment &s2);
 
-        /**
-         * @brief Returns a line from a point and a vector
-         * 
-         * @param
-         * p: Point
-         * @param
-         * d: Vector
-        */
-        static Segment directed_line(const Point &p, const Vector &v);
-
-        friend std::ostream& operator<< (std::ostream &out, const Segment &l) {
-            out << l;
-            return out;
-        }
+        friend std::ostream &operator<<(std::ostream &out, const Segment &l);
 };

@@ -181,3 +181,8 @@ Point Line::get_point_along(double t) const {
 Line Line::directed_line(const Point &p, const Vector &v) {
     return Line{p, p + v};
 }
+
+std::ostream &operator<<(std::ostream &out, const Line &l) {
+    out << "[" << l.a << ", " << l.b << ", " << l.c << "]-{" << l.p1 << ", " << l.p2 << "}";
+    return out;
+}
