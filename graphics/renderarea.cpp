@@ -288,7 +288,7 @@ void RenderArea::mouseReleaseEvent(QMouseEvent *event)
 
 void RenderArea::wheelEvent(QWheelEvent *event)
 {
-    scale += 5 * scale / event->delta();
+    scale += 5 * scale / event->angleDelta().y();
     repaint();
 }
 

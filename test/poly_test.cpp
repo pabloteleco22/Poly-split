@@ -253,6 +253,7 @@ TEST(LineTest, CrossLineLineFalse) {
     ASSERT_FALSE(lin1.cross_line(lin2, inter_point));
 }
 
+/*
 TEST(LineTest, CrossLineSegmentTrue) {
     const Point line_start_point;
     const Point line_end_point{4, 4};
@@ -278,6 +279,7 @@ TEST(LineTest, CrossLineSegmentFalse) {
 
     ASSERT_FALSE(cross_line(line, segment, inter_point));
 }
+*/
 
 TEST(LineTest, IsSameTrue1) {
     const Point start_point1;

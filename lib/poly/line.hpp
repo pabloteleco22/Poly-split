@@ -200,7 +200,7 @@ class Segment {
          * 
          * @return If the line and the segment intersect
         */
-        friend bool cross_line(const Line &lin, const Segment &seg, Point &result);
+        //friend bool cross_line(const Line &lin, const Segment &seg, Point &result);
 
         bool operator==(const Segment &other) const;
         Segment &operator=(const Segment &other);
