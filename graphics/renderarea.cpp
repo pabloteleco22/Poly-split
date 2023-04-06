@@ -116,7 +116,8 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     Segment cut;
     if(polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut))
     {
-        painter.setPen(QPen(Qt::black, 1.5));
+        //painter.setPen(QPen(Qt::black, 1.5));
+        painter.setPen(QPen(Qt::white, 1.5));
         painter.drawLine(QPointF(cut.get_start().x, cut.get_start().y), QPointF(cut.get_end().x, cut.get_end().y));
     }
 
