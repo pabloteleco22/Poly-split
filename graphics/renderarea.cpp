@@ -107,7 +107,7 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
 
         if(showInfo)
         {
-            Vector p = polygons[i].count_center();
+            Vector p = polygons[i].find_center();
             painter.drawText(QPointF(p.x, p.y), QString::number(polygons[i].count_square()));
         }
     }

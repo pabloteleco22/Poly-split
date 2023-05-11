@@ -14,6 +14,7 @@ private:
 
 public:
     Polygon();
+    Polygon(const Polygon &p);
 
     Polygon(const Points &p);
 
@@ -42,13 +43,13 @@ public:
      * @param
      * poly2: The resulting polygon with the specified area.
      * @param
-     * cutLine: The line dividing the two polygons.
+     * cut_line: The line dividing the two polygons.
      * 
      * @returns
      * true: if it is possible.
      * false: if it is not possible.
     */
-    bool split(double square, Polygon &poly1, Polygon &poly2, Segment &cutLine) const;
+    bool split(double square, Polygon &poly1, Polygon &poly2, Segment &cut_line) const;
 
     /**
      * @brief Returns the distance between the nearest point of the polygon
@@ -104,7 +105,7 @@ public:
     */
     bool is_clockwise(void) const;
 
-    const Points get_vectors(void) const {
+    const Points get_vertex(void) const {
         return vertex;
     }
 

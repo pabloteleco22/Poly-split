@@ -155,6 +155,10 @@ const char *Polygon::NotEnoughPointsException::what() const noexcept {
 
 Polygon::Polygon() {}
 
+Polygon::Polygon(const Polygon &p) {
+    vertex = p.vertex;
+}
+
 Polygon::Polygon(const Points &p) {
     vertex = p;
 }
