@@ -797,7 +797,7 @@ TEST(PolygonTest, FindCenter) {
 
     const Point expected_point{1, 1};
 
-    ASSERT_EQ(poly.count_center(), expected_point);
+    ASSERT_EQ(poly.find_center(), expected_point);
 }
 
 TEST(PolygonTest, FindCenterEmpty) {
@@ -806,7 +806,7 @@ TEST(PolygonTest, FindCenterEmpty) {
 
     const Point expected_point{};
 
-    ASSERT_THROW(poly.count_center(), Polygon::NotEnoughPointsException);
+    ASSERT_THROW(poly.find_center(), Polygon::NotEnoughPointsException);
 }
 
 TEST(PolygonTest, SplitNearestEdge) {
