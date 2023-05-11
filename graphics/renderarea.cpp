@@ -114,11 +114,13 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
 
     Polygon poly1, poly2;
     Segment cut;
-    if(polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut))
-    {
+    try {
+        polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut);
         //painter.setPen(QPen(Qt::black, 1.5));
         painter.setPen(QPen(Qt::white, 1.5));
         painter.drawLine(QPointF(cut.get_start().x, cut.get_start().y), QPointF(cut.get_end().x, cut.get_end().y));
+    } catch (const Polygon::CannotSplitException &) {
+
     }
 
     if(showInfo)
@@ -162,8 +164,9 @@ void RenderArea::keyPressEvent(QKeyEvent *event)
     {
         Polygon poly1, poly2;
         Segment cut;
-        if(polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut))
-        {
+        try{
+            polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut);
+
             polygons[selectedPolygon] = poly1;
             polygons.push_back(poly2);
 
@@ -173,6 +176,8 @@ void RenderArea::keyPressEvent(QKeyEvent *event)
             }
 
             repaint();
+        } catch (const Polygon::CannotSplitException &) {
+
         }
     }
     if(event->key() == Qt::Key_P)
