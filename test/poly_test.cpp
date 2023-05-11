@@ -692,7 +692,7 @@ TEST(PolygonTest, SplitTrue) {
     const double expected_area{3};
     const Segment expected_cut_line{Point{1.5, 2}, Point{1.5, 0}};
 
-    ASSERT_TRUE(original_poly.split(expected_area, first_poly, second_poly, cut_line));
+    ASSERT_NO_THROW(original_poly.split(expected_area, first_poly, second_poly, cut_line));
     ASSERT_EQ(second_poly.count_square(), expected_area);
     ASSERT_EQ(first_poly.count_square() + second_poly.count_square(), original_poly.count_square());
     ASSERT_EQ(cut_line, expected_cut_line);
@@ -710,7 +710,7 @@ TEST(PolygonTest, SplitFalse) {
     Segment cut_line;
     const double expected_area{300};
 
-    ASSERT_FALSE(original_poly.split(expected_area, first_poly, second_poly, cut_line));
+    ASSERT_THROW(original_poly.split(expected_area, first_poly, second_poly, cut_line), Polygon::CannotSplitException);
 }
 
 TEST(PolygonTest, FindDistanceOutside) {
