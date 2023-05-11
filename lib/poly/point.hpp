@@ -2,8 +2,9 @@
 
 #include <ostream>
 #include <vector>
+#include <limits>
 
-const double POLY_SPLIT_EPS = 1E-6;
+const double POLY_SPLIT_EPS = 1E-12;
 
 struct Point {
     double x, y;

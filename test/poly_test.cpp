@@ -161,7 +161,8 @@ TEST(LineTest, DistanceIn) {
     const Point distance_point{2, 4};
     const Line lin{start_point, end_point};
 
-    const double expected_distance{1.414213562};
+    //const double expected_distance{1.414213562};
+    const double expected_distance{sqrt(2.0)};
 
     ASSERT_LE(fabs(fabs(lin.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
@@ -172,7 +173,8 @@ TEST(LineTest, DistanceOut) {
     const Point distance_point{-2, -4};
     const Line lin{start_point, end_point};
 
-    const double expected_distance{1.414213562};
+    //const double expected_distance{1.414213562};
+    const double expected_distance{sqrt(2.0)};
 
     ASSERT_LE(fabs(fabs(lin.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
@@ -419,7 +421,8 @@ TEST(SegmentTest, DistanceIn) {
     const Point distance_point{2, 4};
     const Segment seg{start_point, end_point};
 
-    const double expected_distance{1.414213562};
+    //const double expected_distance{1.414213562};
+    const double expected_distance{sqrt(2.0)};
 
     ASSERT_LE(fabs(fabs(seg.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
@@ -430,7 +433,8 @@ TEST(SegmentTest, DistanceOut) {
     const Point distance_point{-2, -4};
     const Segment seg{start_point, end_point};
 
-    const double expected_distance{1.414213562};
+    //const double expected_distance{1.414213562};
+    const double expected_distance{sqrt(2.0)};
 
     ASSERT_LE(fabs(fabs(seg.get_distance(distance_point)) - expected_distance), POLY_SPLIT_EPS);
 }
