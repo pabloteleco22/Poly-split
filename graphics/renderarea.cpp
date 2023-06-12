@@ -49,8 +49,12 @@ void drawPoly(QPainter &painter, const Polygon &poly)
 RenderArea::RenderArea(QWidget *parent)
     : QWidget(parent)
 {
-    setBackgroundRole(QPalette::Base);
+    QPalette pal = QPalette();
+    pal.setColor(QPalette::Window, Qt::white);
+
+    //setBackgroundRole(QPalette::Base);
     setAutoFillBackground(true);
+    setPalette(pal);
     setMouseTracking(true);
 
     polygons_colors.push_back(Qt::darkRed);
@@ -72,6 +76,7 @@ RenderArea::RenderArea(QWidget *parent)
 void RenderArea::paintEvent(QPaintEvent * /* event */)
 {
     QPainter painter(this);
+    painter.setPen(Qt::black);
 
     if(showHelp)
     {
@@ -116,8 +121,8 @@ void RenderArea::paintEvent(QPaintEvent * /* event */)
     Segment cut;
     try {
         polygons[selectedPolygon].split(squareToCut, poly1, poly2, cut);
-        //painter.setPen(QPen(Qt::black, 1.5));
-        painter.setPen(QPen(Qt::white, 1.5));
+        painter.setPen(QPen(Qt::black, 1.5));
+        //painter.setPen(QPen(Qt::white, 1.5));
         painter.drawLine(QPointF(cut.get_start().x, cut.get_start().y), QPointF(cut.get_end().x, cut.get_end().y));
     } catch (const Polygon::CannotSplitException &) {
 
