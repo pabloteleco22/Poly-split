@@ -9,7 +9,7 @@
 #include <cstdio>
 #include <cfloat>
 
-#include <../lib/poly/polygon.hpp>
+#include <../src/poly/polygon.hpp>
 
 std::vector<Polygon> polygons;
 std::vector<QColor> polygons_colors;

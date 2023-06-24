@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_definitions("-Wall -Wextra")
 
-add_subdirectory(lib/poly)
+add_subdirectory(src/poly)
 
 #------------------- TEST -------------------#
 include(FetchContent)
